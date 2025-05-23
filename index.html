@@ -42,7 +42,7 @@
       border: 1px solid #ccc;
       border-radius: 8px;
     }
-    button {
+    button[type="submit"] {
       padding: 12px 24px;
       font-size: 16px;
       background-color: #000;
@@ -51,13 +51,14 @@
       border-radius: 8px;
       cursor: pointer;
     }
-    .estrelas {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  gap: 5px;
-}
 
+    /* Estrelas alinhadas à esquerda */
+    .estrelas {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: 5px;
+    }
     .estrelas input { display: none; }
     .estrelas label {
       font-size: 2em;
@@ -69,6 +70,40 @@
     .estrelas label:hover,
     .estrelas label:hover ~ label {
       color: gold;
+    }
+
+    /* Botões de indicação */
+    .indicacao-botoes {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .indicacao-botoes button {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: white;
+      border: 2px solid gray;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    .indicacao-botoes button.vermelho {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
+    .indicacao-botoes button.amarelo {
+      border-color: #ffc107;
+      color: #856404;
+    }
+    .indicacao-botoes button.verde {
+      border-color: #198754;
+      color: #198754;
+    }
+    .indicacao-botoes button.selecionado {
+      background-color: currentColor;
+      color: white;
     }
   </style>
 </head>
@@ -153,21 +188,10 @@
 
       <div class="linha"><label>O que falta no Smash do Cabo?</label><input type="text" name="falta" /></div>
 
-      <div class="linha"><label>Indicação para amigos (0 a 10) *</label>
-        <select name="indicacao" required>
-          <option value="">Selecione</option>
-          <option value="0">0</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-        </select>
+      <div class="linha">
+        <label>Indicação para amigos (0 a 10) *</label>
+        <div class="indicacao-botoes" id="indicacaoBotoes"></div>
+        <input type="hidden" name="indicacao" id="inputIndicacao" required />
       </div>
 
       <div class="linha"><label>Sugestão ou elogio</label><textarea name="sugestao" rows="3"></textarea></div>
@@ -177,6 +201,42 @@
   </div>
 
   <script>
+    // Função para gerar os botões 0 a 10 para indicação
+    const containerIndicacao = document.getElementById('indicacaoBotoes');
+    const inputIndicacao = document.getElementById('inputIndicacao');
+
+    function criarBotaoIndicacao(valor) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = valor;
+
+      if (valor <= 4) {
+        btn.classList.add('vermelho');
+      } else if (valor <= 7) {
+        btn.classList.add('amarelo');
+      } else {
+        btn.classList.add('verde');
+      }
+
+      btn.addEventListener('click', () => {
+        // Remove seleção anterior
+        containerIndicacao.querySelectorAll('button').forEach(b => b.classList.remove('selecionado'));
+        // Marca o selecionado
+        btn.classList.add('selecionado');
+        // Atualiza o input escondido
+        inputIndicacao.value = valor;
+      });
+
+      return btn;
+    }
+
+    // Gera os botões 0 a 10
+    for (let i = 0; i <= 10; i++) {
+      containerIndicacao.appendChild(criarBotaoIndicacao(i));
+    }
+
+
+    // Código do seu formulário: envio, etc
     const SUPABASE_URL = 'https://kwktdbinfadztnkghuul.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3a3RkYmluZmFkenRua2dodXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NzI5NjAsImV4cCI6MjA2MzU0ODk2MH0.jN-ggFrIE1x_4kO8KE5G_bZq6V1yFT1El64oQ_ELubY';
 
@@ -211,7 +271,7 @@
         localStorage.setItem('cliente_telefone', data.telefone);
 
         // Redireciona para a tela de brinde
-        window.location.href = "/obrigado.html";
+        window.location.href = "https://jenicqn.github.io/smashdocabo/obrigado.html";
       } else {
         alert("Erro ao enviar. Tente novamente.");
       }
