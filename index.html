@@ -53,29 +53,39 @@
     }
     /* Estrelas alinhadas à esquerda e funcionando da esquerda para direita */
     .estrelas {
-      display: flex;
-      flex-direction: row;
-      gap: 5px;
-    }
-    .estrelas input {
-      display: none;
-    }
-    .estrelas label {
-      font-size: 2em;
-      color: #ccc;
-      cursor: pointer;
-      transition: color 0.2s;
-      position: relative;
-    }
-    /* A estrela marcada e todas à esquerda ficam douradas */
-    .estrelas input:checked ~ label,
-    .estrelas label:hover,
-    .estrelas label:hover ~ label {
-      color: gold;
-    }
-    .estrelas input:checked + label {
-      color: gold;
-    }
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.estrelas input {
+  display: none;
+}
+
+.estrelas label {
+  font-size: 2em;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+  position: relative;
+}
+
+/* Só pinta a estrela selecionada */
+.estrelas input:checked + label {
+  color: gold;
+}
+
+/* Removendo a pintura das anteriores */
+/* Comentado para não pintar as anteriores */
+/* .estrelas input:checked + label ~ label {
+  color: gold;
+} */
+
+/* Mantém o hover padrão, pinta só a estrela e anteriores no hover */
+.estrelas label:hover,
+.estrelas label:hover ~ label {
+  color: gold;
+}
 
     /* Botões de indicação */
     .indicacao-botoes {
