@@ -54,18 +54,21 @@
     /* Estrelas alinhadas à esquerda */
     .estrelas {
   display: flex;
-  flex-direction: row-reverse; /* para que o primeiro input seja o último visualmente */
+  flex-direction: row-reverse; /* necessário para o funcionamento */
   justify-content: flex-start;
   gap: 5px;
+  direction: rtl; /* inverte a direção visual */
+}
+.estrelas label {
+  direction: ltr; /* reverte o texto das labels para ficar correto */
 }
 .estrelas input {
   display: none;
 }
-.estrelas label {
-  font-size: 2em;
-  color: #ccc;
-  cursor: pointer;
-  transition: color 0.2s;
+.estrelas input:checked ~ label,
+.estrelas label:hover,
+.estrelas label:hover ~ label {
+  color: gold;
 }
 
 /* cor para as estrelas selecionadas e anteriores */
