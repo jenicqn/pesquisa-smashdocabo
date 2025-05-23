@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom, #ffffff, #f3f3f3);
+      background-color: #f97316; /* laranja Smash */
       margin: 0;
       padding: 0;
       text-align: center;
@@ -15,40 +15,41 @@
       flex-direction: column;
       justify-content: center;
       height: 100vh;
-      color: #333;
+      color: #fff; /* texto branco por padrao */
     }
     .container {
       max-width: 500px;
       margin: auto;
       padding: 20px;
       border-radius: 16px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      background-color: #fff;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      background-color: #000; /* fundo preto no card */
     }
     .logo {
-      width: 120px;
+      width: 140px;
       margin-bottom: 20px;
     }
     h1 {
-      color: #2e7d32;
+      color: #fff;
       margin-bottom: 10px;
     }
     .brinde {
       font-size: 18px;
       margin: 10px 0;
+      color: #fff;
     }
     .brinde strong {
-      color: #d32f2f;
+      color: #f87171; /* vermelho claro */
     }
     .validade {
-      color: #388e3c;
+      color: #22c55e; /* verde limão */
       font-weight: bold;
       margin-bottom: 20px;
       font-size: 16px;
     }
     .nota {
       font-size: 14px;
-      color: #555;
+      color: #ccc;
     }
     .emoji {
       font-size: 48px;
@@ -59,14 +60,13 @@
 <body>
   <div class="container">
     <img src="https://jenicqn.github.io/smashdocabo/logo.png" alt="Logo Smash do Cabo" class="logo">
-
     <div class="emoji">🎉</div>
     <h1>Obrigado por responder nossa pesquisa!</h1>
     <p class="brinde">
-      🎁 Você ganhou: <br><strong>1 Soda Italiana</strong>
+      🎁 Você ganhou:<br><strong>1 Soda Italiana</strong>
     </p>
     <p class="validade">Válido até: <span id="validade"></span></p>
-    <p class="nota">Apresente um print dessa tela na loja Smash do Cabo.</p>
+    <p class="nota">Apresente este aviso na loja Smash do Cabo.</p>
   </div>
 
   <script>
