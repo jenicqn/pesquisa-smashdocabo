@@ -4,8 +4,17 @@
   <meta charset="UTF-8">
   <title>Obrigado pela sua resposta!</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-    .brinde { color: green; font-size: 1.5em; margin-top: 20px; }
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+
+    .brinde {
+      color: green;
+      font-size: 1.5em;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -15,7 +24,6 @@
   <p>Apresente este aviso na loja Smash do Cabo.</p>
 
   <script>
-    // Define a validade como 30 dias a partir de hoje
     const hoje = new Date();
     hoje.setDate(hoje.getDate() + 30);
     const validade = hoje.toLocaleDateString('pt-BR');
