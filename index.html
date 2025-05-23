@@ -51,36 +51,31 @@
       border-radius: 8px;
       cursor: pointer;
     }
-    /* Estrelas alinhadas à esquerda e funcionando da esquerda para direita */
+    /* Estrelas alinhadas à esquerda */
     .estrelas {
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-}
-
-.estrelas input {
-  display: none;
-}
-
-.estrelas label {
-  font-size: 2em;
-  color: #ccc;
-  cursor: pointer;
-  transition: color 0.2s;
-  position: relative;
-}
-
-/* Pinta só a estrela selecionada */
-.estrelas input:checked + label {
-  color: gold;
-}
-
-/* Remove hover */
-.estrelas label:hover,
-.estrelas label:hover ~ label {
-  color: inherit;
-}
-
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+    }
+    .estrelas input {
+      display: none;
+    }
+    .estrelas label {
+      font-size: 2em;
+      color: #ccc;
+      cursor: pointer;
+      transition: color 0.2s;
+      position: relative;
+    }
+    /* Pinta só a estrela selecionada */
+    .estrelas input:checked + label {
+      color: gold;
+    }
+    /* Remove efeito hover */
+    .estrelas label:hover,
+    .estrelas label:hover ~ label {
+      color: inherit;
+    }
     /* Botões de indicação */
     .indicacao-botoes {
       display: flex;
@@ -145,17 +140,17 @@
       </div>
 
       <div class="linha"><label>Como você avalia o nosso ATENDIMENTO? *</label>
-        <div class="estrelas">                    
-          <input type="radio" id="att5" name="atendimento" value="5" />
-          <label for="att5">★</label>
-          <input type="radio" id="att4" name="atendimento" value="4" />
-          <label for="att4">★</label>
-          <input type="radio" id="att3" name="atendimento" value="3" />
-          <label for="att3">★</label>
-          <input type="radio" id="att2" name="atendimento" value="2" />
-          <label for="att2">★</label>
+        <div class="estrelas">
           <input type="radio" id="att1" name="atendimento" value="1" required />
           <label for="att1">★</label>
+          <input type="radio" id="att2" name="atendimento" value="2" />
+          <label for="att2">★</label>
+          <input type="radio" id="att3" name="atendimento" value="3" />
+          <label for="att3">★</label>
+          <input type="radio" id="att4" name="atendimento" value="4" />
+          <label for="att4">★</label>
+          <input type="radio" id="att5" name="atendimento" value="5" />
+          <label for="att5">★</label>
         </div>
       </div>
 
