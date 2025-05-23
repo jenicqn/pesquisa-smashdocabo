@@ -54,16 +54,23 @@
     /* Estrelas alinhadas à esquerda */
     .estrelas {
   display: flex;
-  flex-direction: row-reverse; /* necessário para o funcionamento */
   justify-content: flex-start;
   gap: 5px;
-  direction: rtl; /* inverte a direção visual */
-}
-.estrelas label {
-  direction: ltr; /* reverte o texto das labels para ficar correto */
+  unicode-bidi: bidi-override;
+  direction: ltr; /* Direção normal para evitar inversão */
+  flex-direction: row; /* Ordem normal */
 }
 .estrelas input {
   display: none;
+}
+.estrelas label {
+  font-size: 2em;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+  /* Usamos a propriedade abaixo para permitir seleção inversa */
+  unicode-bidi: bidi-override;
+  direction: rtl;
 }
 .estrelas input:checked ~ label,
 .estrelas label:hover,
@@ -71,12 +78,6 @@
   color: gold;
 }
 
-/* cor para as estrelas selecionadas e anteriores */
-.estrelas input:checked ~ label,
-.estrelas label:hover,
-.estrelas label:hover ~ label {
-  color: gold;
-}
 
 
     /* Botões de indicação */
