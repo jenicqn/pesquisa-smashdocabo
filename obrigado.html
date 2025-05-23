@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f97316; /* laranja Smash */
+      background-color: #f97316;
       margin: 0;
       padding: 0;
       text-align: center;
@@ -15,7 +15,7 @@
       flex-direction: column;
       justify-content: center;
       height: 100vh;
-      color: #fff; /* texto branco por padrao */
+      color: #fff;
     }
     .container {
       max-width: 500px;
@@ -23,8 +23,8 @@
       padding: 20px;
       border-radius: 16px;
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      background-color: #fff; /* fundo branco no card */
-      color: #000; /* texto preto no card */
+      background-color: #fff;
+      color: #000;
     }
     .logo {
       width: 140px;
@@ -40,13 +40,19 @@
       color: #000;
     }
     .brinde strong {
-      color: #d32f2f; /* vermelho mais escuro */
+      color: #d32f2f;
     }
     .validade {
-      color: #22c55e; /* verde limão */
+      color: #22c55e;
       font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       font-size: 16px;
+    }
+    .codigo {
+      font-size: 18px;
+      font-weight: bold;
+      color: #0d47a1;
+      margin-bottom: 10px;
     }
     .nota {
       font-size: 14px;
@@ -67,17 +73,56 @@
       🎁 Você ganhou:<br><strong>1 Soda Italiana</strong>
     </p>
     <p class="validade">Válido até: <span id="validade"></span></p>
+    <p class="codigo" id="codigoCupom">Gerando seu código...</p>
     <p class="nota">Apresente um print dessa tela na loja Smash do Cabo.</p>
   </div>
 
   <script>
-    // Define validade para 30 dias a partir de hoje
-    const data = new Date();
-    data.setDate(data.getDate() + 30);
-    const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const ano = data.getFullYear();
-    document.getElementById("validade").textContent = `${dia}/${mes}/${ano}`;
+    const SUPABASE_URL = 'https://kwktdbinfadztnkghuul.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3a3RkYmluZmFkenRua2dodXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NzI5NjAsImV4cCI6MjA2MzU0ODk2MH0.jN-ggFrIE1x_4kO8KE5G_bZq6V1yFT1El64oQ_ELubY';
+
+    const brinde = "1 Soda Italiana";
+
+    function gerarCodigoAleatorio() {
+      const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let aleatorio = '';
+      for (let i = 0; i < 4; i++) {
+        aleatorio += letras.charAt(Math.floor(Math.random() * letras.length));
+      }
+      return 'SMASH-' + aleatorio;
+    }
+
+    async function gerarCupom() {
+      const codigo = gerarCodigoAleatorio();
+      const nome = localStorage.getItem('cliente_nome') || 'Cliente';
+      const email = localStorage.getItem('cliente_email') || '';
+      const telefone = localStorage.getItem('cliente_telefone') || '';
+      const hoje = new Date();
+      const validade = new Date(hoje);
+      validade.setDate(validade.getDate() + 30);
+
+      document.getElementById("validade").textContent = validade.toLocaleDateString('pt-BR');
+      document.getElementById('codigoCupom').textContent = `Código do Cupom: ${codigo}`;
+
+      await fetch(`${SUPABASE_URL}/rest/v1/cupons`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          codigo,
+          cliente_nome: nome,
+          cliente_email: email,
+          cliente_telefone: telefone,
+          brinde,
+          valido_ate: validade.toISOString().split('T')[0]
+        })
+      });
+    }
+
+    gerarCupom();
   </script>
 </body>
 </html>
