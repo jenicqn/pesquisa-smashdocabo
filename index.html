@@ -55,7 +55,6 @@
     .estrelas {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
   gap: 5px;
 }
 
@@ -70,15 +69,12 @@
   transition: color 0.2s;
 }
 
-.estrelas input:checked + label,
-.estrelas input:checked ~ label {
-  color: gold;
-}
-
+.estrelas input:checked ~ label,
 .estrelas label:hover,
 .estrelas label:hover ~ label {
   color: gold;
 }
+
     /* Botões de indicação */
     .indicacao-botoes {
       display: flex;
