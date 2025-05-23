@@ -3,40 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel de Respostas - Pesquisa de Satisfação</title>
+  <title>Painel de Respostas - Smash do Cabo</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      background-color: #f4f6fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f97316;
+      margin: 0;
+      padding: 40px 20px;
+      color: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 1000px;
+      width: 100%;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+      display: none;
     }
     .header {
       background-color: #ff6600;
       color: white;
       padding: 15px 30px;
-    }
-    .table th {
-      background-color: #eaeaea;
+      margin-bottom: 20px;
+      width: 100%;
+      text-align: center;
+      border-radius: 16px 16px 0 0;
     }
     .btn-whatsapp {
       background-color: #25D366;
       color: white;
     }
-    .btn-info-light {
-      background-color: #ffcc00;
-      color: black;
+    #login-box {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
     }
-    .btn-delete {
-      background-color: #dc3545;
+    #login-box input {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    #login-box button {
+      padding: 10px 20px;
+      background-color: #000;
       color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h2>Painel de Respostas - Clientes</h2>
+  <div id="login-box">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Usuário">
+    <input type="password" id="password" placeholder="Senha">
+    <button onclick="verificarLogin()">Entrar</button>
   </div>
 
-  <div class="container mt-4">
+  <div class="container">
+    <div class="header">
+      <h2>Painel de Respostas - Clientes</h2>
+    </div>
     <table class="table table-striped table-bordered align-middle" id="tabela-respostas">
       <thead>
         <tr>
@@ -50,28 +90,36 @@
           <th class="text-center">Ações</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- Respostas serão inseridas aqui pelo JavaScript -->
-      </tbody>
+      <tbody></tbody>
     </table>
   </div>
 
   <script>
+    function verificarLogin() {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      if (user === "admin" && pass === "1234") {
+        document.getElementById('login-box').style.display = 'none';
+        document.querySelector('.container').style.display = 'block';
+        carregarRespostas();
+      } else {
+        alert("Usuário ou senha incorretos");
+      }
+    }
+
     const SUPABASE_URL = 'https://kwktdbinfadztnkghuul.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3a3RkYmluZmFkenRua2dodXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NzI5NjAsImV4cCI6MjA2MzU0ODk2MH0.jN-ggFrIE1x_4kO8KE5G_bZq6V1yFT1El64oQ_ELubY';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3a3RkYmluZmFkenRua2dodXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NzI5NjAsImV4cCI6MjA2MzU0ODk2MH0.jN-ggFrIE1x_4kO8KE5G_bZq6V1yFT1El64oQ_ELubY';
 
     async function carregarRespostas() {
       const resposta = await fetch(`${SUPABASE_URL}/rest/v1/feedback_detalhado?select=*`, {
         headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json'
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
         }
       });
       const dados = await resposta.json();
       const tbody = document.querySelector('#tabela-respostas tbody');
       tbody.innerHTML = '';
-
       dados.reverse().forEach(resposta => {
         const linha = document.createElement('tr');
         linha.innerHTML = `
@@ -89,8 +137,6 @@
         tbody.appendChild(linha);
       });
     }
-
-    carregarRespostas();
   </script>
 </body>
 </html>
