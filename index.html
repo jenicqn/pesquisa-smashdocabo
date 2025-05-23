@@ -204,10 +204,18 @@
       });
 
       if (response.ok) {
-        window.location.href = "https://jenicqn.github.io/smashdocabo/obrigado.html";
-      } else {
-        alert("Erro ao enviar. Tente novamente.");
-      }
+  // Salva dados do cliente para o cupom
+  localStorage.setItem('cliente_nome', data.nome);
+  localStorage.setItem('cliente_email', data.email);
+  localStorage.setItem('cliente_telefone', data.telefone);
+
+  // Redireciona para a tela de brinde
+  window.location.href = "https://jenicqn.github.io/smashdocabo/obrigado.html";
+} else {
+  alert("Erro ao enviar. Tente novamente.");
+}
+
+
     });
   </script>
 </body>
