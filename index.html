@@ -70,14 +70,15 @@
   position: relative;
 }
 
-/* Só pinta a estrela selecionada */
+/* Pinta só a estrela selecionada */
 .estrelas input:checked + label {
   color: gold;
 }
-/* Remover efeito hover */
+
+/* Remove hover */
 .estrelas label:hover,
 .estrelas label:hover ~ label {
-  color: gold; /* mantém a cor original, sem pintar */
+  color: inherit;
 }
 
     /* Botões de indicação */
