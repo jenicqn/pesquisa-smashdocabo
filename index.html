@@ -11,9 +11,27 @@
       font-size: 2em; color: #ccc; cursor: pointer;
       display: inline-block; margin-right: 5px;
     }
-    .estrelas input:checked ~ label,
-    .estrelas label:hover,
-    .estrelas label:hover ~ label { color: gold; }
+    .estrelas {
+  direction: rtl;
+  unicode-bidi: bidi-override;
+}
+
+.estrelas input {
+  display: none;
+}
+
+.estrelas label {
+  font-size: 2em;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.estrelas input:checked ~ label,
+.estrelas label:hover,
+.estrelas label:hover ~ label {
+  color: gold;
+}
+
     .linha { margin-bottom: 20px;}
   </style>
 </head>
