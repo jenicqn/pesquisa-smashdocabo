@@ -67,9 +67,20 @@
   color: #ccc;
   cursor: pointer;
   transition: color 0.2s;
+  position: relative;
 }
 
-.estrelas input:checked ~ label,
+/* Pinta a estrela selecionada */
+.estrelas input:checked + label {
+  color: gold;
+}
+
+/* Pinta as estrelas anteriores à selecionada */
+.estrelas input:checked + label ~ label {
+  color: gold;
+}
+
+/* Pinta as estrelas no hover */
 .estrelas label:hover,
 .estrelas label:hover ~ label {
   color: gold;
