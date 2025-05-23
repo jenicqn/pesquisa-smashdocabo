@@ -53,27 +53,35 @@
     }
     /* Estrelas alinhadas à esquerda */
     .estrelas {
-      display: flex;
-      flex-direction: row; /* normal */
-      justify-content: flex-start;
-      gap: 5px;
-    }
-    .estrelas input {
-      display: none;
-    }
-    .estrelas label {
-      font-size: 2em;
-      color: #ccc;
-      cursor: pointer;
-      transition: color 0.2s;
-      unicode-bidi: bidi-override;
-      direction: rtl;
-    }
-    .estrelas input:checked ~ label,
-    .estrelas label:hover,
-    .estrelas label:hover ~ label {
-      color: gold;
-    }
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.estrelas input {
+  display: none;
+}
+
+.estrelas label {
+  font-size: 2em;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+/* Seleciona as estrelas do lado esquerdo até a selecionada */
+.estrelas input:checked + label,
+.estrelas input:checked ~ label {
+  color: gold;
+}
+
+/* Hover para iluminar estrelas ao passar o mouse */
+.estrelas label:hover,
+.estrelas label:hover ~ label {
+  color: gold;
+}
+
     /* Botões de indicação */
     .indicacao-botoes {
       display: flex;
