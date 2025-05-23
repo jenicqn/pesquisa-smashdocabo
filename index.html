@@ -52,10 +52,12 @@
       cursor: pointer;
     }
     .estrelas {
-      direction: rtl;
-      unicode-bidi: bidi-override;
-      display: inline-block;
-    }
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
     .estrelas input { display: none; }
     .estrelas label {
       font-size: 2em;
