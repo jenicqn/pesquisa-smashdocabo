@@ -2,152 +2,219 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Obrigado!</title>
+  <title>Pesquisa Smash do Cabo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f97316;
       margin: 0;
-      padding: 0;
-      text-align: center;
+      padding: 40px 20px;
+      color: #000;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      height: 100vh;
-      color: #fff;
+      align-items: center;
     }
     .container {
-      max-width: 500px;
-      margin: auto;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
       background-color: #fff;
-      color: #000;
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
     }
     .logo {
-      width: 140px;
+      width: 160px;
+      display: block;
+      margin: 0 auto 20px;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+    }
+    .linha {
       margin-bottom: 20px;
     }
-    h1 {
-      color: #000;
-      margin-bottom: 10px;
+    select, input[type="text"], input[type="email"], input[type="date"], textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
-    .brinde {
-      font-size: 18px;
-      margin: 10px 0;
-      color: #000;
-    }
-    .brinde strong {
-      color: #d32f2f;
-    }
-    .validade {
-      color: #22c55e;
-      font-weight: bold;
-      margin-bottom: 10px;
+    button {
+      padding: 12px 24px;
       font-size: 16px;
+      background-color: #000;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
-    .codigo {
-      font-size: 18px;
-      font-weight: bold;
-      color: #0d47a1;
-      margin-bottom: 10px;
+    .estrelas {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: flex-start;
+      gap: 5px;
     }
-    .nota {
-      font-size: 14px;
-      color: #333;
+    .estrelas input { display: none; }
+    .estrelas label {
+      font-size: 2em;
+      color: #ccc;
+      cursor: pointer;
+      transition: color 0.2s;
     }
-    .emoji {
-      font-size: 48px;
-      margin-bottom: 10px;
+    .estrelas input:checked ~ label,
+    .estrelas label:hover,
+    .estrelas label:hover ~ label {
+      color: gold;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="content">
+  <div class="container">
     <img src="https://jenicqn.github.io/smashdocabo/logo.png" alt="Logo Smash do Cabo" class="logo" />
-    <div class="emoji">🎉</div>
-    <h1>Obrigado por responder nossa pesquisa!</h1>
-    <p class="brinde">
-      🎁 Você ganhou:<br /><strong>1 Soda Italiana</strong>
-    </p>
-    <p class="validade">Válido até: <span id="validade"></span></p>
-    <p class="codigo" id="codigoCupom">Gerando seu código...</p>
-    <p class="nota">Apresente um print dessa tela na loja Smash do Cabo.</p>
+    <h1>Pesquisa de Satisfação - Smash do Cabo</h1>
+
+    <form id="formularioPesquisa">
+      <div class="linha"><label>Nome *</label><input type="text" name="nome" required /></div>
+      <div class="linha"><label>Telefone *</label><input type="text" name="telefone" required /></div>
+      <div class="linha"><label>Email *</label><input type="email" name="email" required /></div>
+      <div class="linha"><label>Data de nascimento</label><input type="date" name="data_nascimento" /></div>
+
+      <div class="linha">
+        <label>Você é morador da cidade? *</label>
+        <input type="radio" name="morador" value="Sim, sou morador" required /> Sim
+        <input type="radio" name="morador" value="Não, sou turista" required /> Não
+      </div>
+
+      <div class="linha"><label>Como você avalia o nosso ATENDIMENTO? *</label>
+        <div class="estrelas">
+          <input type="radio" id="att5" name="atendimento" value="5" required /><label for="att5">★</label>
+          <input type="radio" id="att4" name="atendimento" value="4" /><label for="att4">★</label>
+          <input type="radio" id="att3" name="atendimento" value="3" /><label for="att3">★</label>
+          <input type="radio" id="att2" name="atendimento" value="2" /><label for="att2">★</label>
+          <input type="radio" id="att1" name="atendimento" value="1" /><label for="att1">★</label>
+        </div>
+      </div>
+
+      <div class="linha"><label>Qualidade dos produtos *</label>
+        <div class="estrelas">
+          <input type="radio" id="qual5" name="qualidade" value="5" required /><label for="qual5">★</label>
+          <input type="radio" id="qual4" name="qualidade" value="4" /><label for="qual4">★</label>
+          <input type="radio" id="qual3" name="qualidade" value="3" /><label for="qual3">★</label>
+          <input type="radio" id="qual2" name="qualidade" value="2" /><label for="qual2">★</label>
+          <input type="radio" id="qual1" name="qualidade" value="1" /><label for="qual1">★</label>
+        </div>
+      </div>
+
+      <div class="linha"><label>Tempo de espera *</label>
+        <div class="estrelas">
+          <input type="radio" id="tempo5" name="tempo" value="5" required /><label for="tempo5">★</label>
+          <input type="radio" id="tempo4" name="tempo" value="4" /><label for="tempo4">★</label>
+          <input type="radio" id="tempo3" name="tempo" value="3" /><label for="tempo3">★</label>
+          <input type="radio" id="tempo2" name="tempo" value="2" /><label for="tempo2">★</label>
+          <input type="radio" id="tempo1" name="tempo" value="1" /><label for="tempo1">★</label>
+        </div>
+      </div>
+
+      <div class="linha"><label>Variedade de produtos *</label>
+        <div class="estrelas">
+          <input type="radio" id="var5" name="variedade" value="5" required /><label for="var5">★</label>
+          <input type="radio" id="var4" name="variedade" value="4" /><label for="var4">★</label>
+          <input type="radio" id="var3" name="variedade" value="3" /><label for="var3">★</label>
+          <input type="radio" id="var2" name="variedade" value="2" /><label for="var2">★</label>
+          <input type="radio" id="var1" name="variedade" value="1" /><label for="var1">★</label>
+        </div>
+      </div>
+
+      <div class="linha"><label>Custo-benefício *</label>
+        <div class="estrelas">
+          <input type="radio" id="cb5" name="custobeneficio" value="5" required /><label for="cb5">★</label>
+          <input type="radio" id="cb4" name="custobeneficio" value="4" /><label for="cb4">★</label>
+          <input type="radio" id="cb3" name="custobeneficio" value="3" /><label for="cb3">★</label>
+          <input type="radio" id="cb2" name="custobeneficio" value="2" /><label for="cb2">★</label>
+          <input type="radio" id="cb1" name="custobeneficio" value="1" /><label for="cb1">★</label>
+        </div>
+      </div>
+
+      <div class="linha"><label>Como chegou até a loja? *</label>
+        <select name="origem" required>
+          <option value="">Selecione</option>
+          <option value="Google">Google</option>
+          <option value="Instagram">Instagram</option>
+          <option value="TikTok">TikTok</option>
+          <option value="Influencer">Influencer</option>
+          <option value="Passando em frente">Passando em frente</option>
+          <option value="Outros">Outros</option>
+        </select>
+      </div>
+
+      <div class="linha"><label>O que falta no Smash do Cabo?</label><input type="text" name="falta" /></div>
+
+      <div class="linha"><label>Indicação para amigos (0 a 10) *</label>
+        <select name="indicacao" required>
+          <option value="">Selecione</option>
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+
+      <div class="linha"><label>Sugestão ou elogio</label><textarea name="sugestao" rows="3"></textarea></div>
+
+      <button type="submit">Enviar</button>
+    </form>
   </div>
 
   <script>
     const SUPABASE_URL = 'https://kwktdbinfadztnkghuul.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3a3RkYmluZmFkenRua2dodXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NzI5NjAsImV4cCI6MjA2MzU0ODk2MH0.jN-ggFrIE1x_4kO8KE5G_bZq6V1yFT1El64oQ_ELubY';
-    const brinde = "1 Soda Italiana";
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3a3RkYmluZmFkenRua2dodXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NzI5NjAsImV4cCI6MjA2MzU0ODk2MH0.jN-ggFrIE1x_4kO8KE5G_bZq6V1yFT1El64oQ_ELubY';
 
-    // Verifica se dados do cliente existem no localStorage
-    const nome = localStorage.getItem('cliente_nome');
-    const email = localStorage.getItem('cliente_email');
-    const telefone = localStorage.getItem('cliente_telefone');
+    document.getElementById('formularioPesquisa').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form));
 
-    if (!nome || !email || !telefone) {
-      // Se não tiver dados, bloqueia o cupom e avisa ou redireciona
-      document.getElementById('content').innerHTML = `
-        <h1>Oops!</h1>
-        <p>Para receber o cupom, você precisa responder a pesquisa primeiro.</p>
-        <a href="index.html">Clique aqui para fazer a pesquisa</a>
-      `;
-    } else {
-      // Gera e salva o cupom uma única vez
-      if (!localStorage.getItem('codigo_cupom')) {
-        gerarCupom();
-      } else {
-        // Se já existe cupom salvo, apenas mostra
-        mostrarCupom(localStorage.getItem('codigo_cupom'), localStorage.getItem('validade_cupom'));
-      }
-    }
-
-    function gerarCodigoAleatorio() {
-      const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let aleatorio = '';
-      for (let i = 0; i < 4; i++) {
-        aleatorio += letras.charAt(Math.floor(Math.random() * letras.length));
-      }
-      return 'SMASH-' + aleatorio;
-    }
-
-    async function gerarCupom() {
-      const codigo = gerarCodigoAleatorio();
-      const hoje = new Date();
-      const validade = new Date(hoje);
-      validade.setDate(validade.getDate() + 30);
-
-      document.getElementById("validade").textContent = validade.toLocaleDateString('pt-BR');
-      document.getElementById('codigoCupom').textContent = `Código do Cupom: ${codigo}`;
-
-      await fetch(`${SUPABASE_URL}/rest/v1/cupons`, {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/feedback_detalhado`, {
         method: 'POST',
         headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          codigo,
-          cliente_nome: nome,
-          cliente_email: email,
-          cliente_telefone: telefone,
-          brinde,
-          valido_ate: validade.toISOString().split('T')[0]
+          ...data,
+          atendimento: parseInt(data.atendimento),
+          qualidade: parseInt(data.qualidade),
+          tempo: parseInt(data.tempo),
+          variedade: parseInt(data.variedade),
+          custobeneficio: parseInt(data.custobeneficio),
+          indicacao: parseInt(data.indicacao),
+          data_nascimento: data.data_nascimento || null
         })
       });
 
-      // Salva cupom no localStorage para evitar geração múltipla
-      localStorage.setItem('codigo_cupom', codigo);
-      localStorage.setItem('validade_cupom', validade.toLocaleDateString('pt-BR'));
-    }
+      if (response.ok) {
+        // Salva dados do cliente para o cupom
+        localStorage.setItem('cliente_nome', data.nome);
+        localStorage.setItem('cliente_email', data.email);
+        localStorage.setItem('cliente_telefone', data.telefone);
 
-    function mostrarCupom(codigo, validade) {
-      document.getElementById("validade").textContent = validade;
-      document.getElementById('codigoCupom').textContent = `Código do Cupom: ${codigo}`;
-    }
+        // Redireciona para a tela de brinde
+        window.location.href = "/obrigado.html";
+      } else {
+        alert("Erro ao enviar. Tente novamente.");
+      }
+    });
   </script>
 </body>
 </html>
