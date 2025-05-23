@@ -36,7 +36,7 @@
     .linha {
       margin-bottom: 20px;
     }
-    select, input[type="text"], input[type="email"], input[type="date"], textarea {
+    select, input[type="text"], input[type="email"], textarea {
       width: 100%;
       padding: 10px;
       border: 1px solid #ccc;
@@ -51,7 +51,6 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
     /* Estrelas alinhadas à esquerda */
     .estrelas {
       display: flex;
@@ -71,7 +70,6 @@
     .estrelas label:hover ~ label {
       color: gold;
     }
-
     /* Botões de indicação */
     .indicacao-botoes {
       display: flex;
@@ -116,7 +114,18 @@
       <div class="linha"><label>Nome *</label><input type="text" name="nome" required /></div>
       <div class="linha"><label>Telefone *</label><input type="text" name="telefone" required /></div>
       <div class="linha"><label>Email *</label><input type="email" name="email" required /></div>
-      <div class="linha"><label>Data de nascimento</label><input type="date" name="data_nascimento" /></div>
+
+      <div class="linha">
+        <label>Data de nascimento</label>
+        <input
+          type="text"
+          id="data_nascimento"
+          name="data_nascimento"
+          placeholder="dd/mm/aaaa"
+          maxlength="10"
+          pattern="\d{2}/\d{2}/\d{4}"
+        />
+      </div>
 
       <div class="linha">
         <label>Você é morador da cidade? *</label>
@@ -201,6 +210,26 @@
   </div>
 
   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const inputDataNascimento = document.getElementById('data_nascimento');
+
+      inputDataNascimento.addEventListener('input', function(e) {
+        let value = e.target.value;
+
+        // Remove tudo que não for número
+        value = value.replace(/\D/g, '');
+
+        // Aplica a máscara dd/mm/aaaa
+        if (value.length > 2 && value.length <= 4) {
+          value = value.slice(0, 2) + '/' + value.slice(2);
+        } else if (value.length > 4) {
+          value = value.slice(0, 2) + '/' + value.slice(2, 4) + '/' + value.slice(4, 8);
+        }
+
+        e.target.value = value;
+      });
+    });
+
     // Função para gerar os botões 0 a 10 para indicação
     const containerIndicacao = document.getElementById('indicacaoBotoes');
     const inputIndicacao = document.getElementById('inputIndicacao');
@@ -234,7 +263,6 @@
     for (let i = 0; i <= 10; i++) {
       containerIndicacao.appendChild(criarBotaoIndicacao(i));
     }
-
 
     // Código do seu formulário: envio, etc
     const SUPABASE_URL = 'https://kwktdbinfadztnkghuul.supabase.co';
