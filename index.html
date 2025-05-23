@@ -6,7 +6,7 @@
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f97316; /* fundo laranja Smash */
+      background-color: #f97316;
       margin: 0;
       padding: 40px 20px;
       color: #000;
@@ -40,7 +40,7 @@
     .linha {
       margin-bottom: 20px;
     }
-    select, input[type="text"], textarea {
+    select, input[type="text"], input[type="email"], input[type="date"], textarea {
       width: 100%;
       padding: 10px;
       border: 1px solid #d1d5db;
@@ -84,14 +84,27 @@
     <img src="https://jenicqn.github.io/smashdocabo/logo.png" alt="Logo Smash do Cabo" class="logo">
     <h1>Pesquisa de Satisfação - Smash do Cabo</h1>
 
-    <form action="https://api.web3forms.com/submit" method="POST">
-      <input type="hidden" name="access_key" value="1159c226-dad7-4b79-8890-1460718b927c">
-      <input type="hidden" name="redirect" value="https://jenicqn.github.io/smashdocabo/obrigado.html">
-
+    <form id="formularioPesquisa">
+      <div class="linha">
+        <label>Nome *</label>
+        <input type="text" name="nome" required>
+      </div>
+      <div class="linha">
+        <label>Telefone *</label>
+        <input type="text" name="telefone" required>
+      </div>
+      <div class="linha">
+        <label>Email *</label>
+        <input type="email" name="email" required>
+      </div>
+      <div class="linha">
+        <label>Data de nascimento</label>
+        <input type="date" name="data_nascimento">
+      </div>
       <div class="linha">
         <label>Você é morador da cidade? *</label>
-        <input type="radio" name="morador" value="Sim, sou morador" required> Sim, sou morador
-        <input type="radio" name="morador" value="Não, sou turista" required> Não, sou turista
+        <input type="radio" name="morador" value="Sim, sou morador" required> Sim
+        <input type="radio" name="morador" value="Não, sou turista" required> Não
       </div>
 
       <div class="linha">
@@ -106,7 +119,7 @@
       </div>
 
       <div class="linha">
-        <label>Como você avalia a QUALIDADE DOS NOSSOS PRODUTOS? *</label>
+        <label>Qualidade dos produtos *</label>
         <div class="estrelas">
           <input type="radio" id="qual5" name="qualidade" value="5" required><label for="qual5">&#9733;</label>
           <input type="radio" id="qual4" name="qualidade" value="4"><label for="qual4">&#9733;</label>
@@ -117,7 +130,7 @@
       </div>
 
       <div class="linha">
-        <label>Como você avalia o nosso TEMPO DE ESPERA? *</label>
+        <label>Tempo de espera *</label>
         <div class="estrelas">
           <input type="radio" id="tempo5" name="tempo" value="5" required><label for="tempo5">&#9733;</label>
           <input type="radio" id="tempo4" name="tempo" value="4"><label for="tempo4">&#9733;</label>
@@ -128,7 +141,7 @@
       </div>
 
       <div class="linha">
-        <label>Como você avalia as nossas OPÇÕES E VARIEDADES DE PRODUTOS? *</label>
+        <label>Variedade de produtos *</label>
         <div class="estrelas">
           <input type="radio" id="var5" name="variedade" value="5" required><label for="var5">&#9733;</label>
           <input type="radio" id="var4" name="variedade" value="4"><label for="var4">&#9733;</label>
@@ -139,7 +152,7 @@
       </div>
 
       <div class="linha">
-        <label>Como você avalia o nosso CUSTO-BENEFÍCIO? *</label>
+        <label>Custo-benefício *</label>
         <div class="estrelas">
           <input type="radio" id="cb5" name="custobeneficio" value="5" required><label for="cb5">&#9733;</label>
           <input type="radio" id="cb4" name="custobeneficio" value="4"><label for="cb4">&#9733;</label>
@@ -150,7 +163,7 @@
       </div>
 
       <div class="linha">
-        <label>Como você chegou até a loja? *</label>
+        <label>Como chegou até a loja? *</label>
         <select name="origem" required>
           <option value="">Selecione</option>
           <option value="Google">Google</option>
@@ -163,12 +176,12 @@
       </div>
 
       <div class="linha">
-        <label>O que você acredita que FALTA no Smash do Cabo?</label>
-        <input type="text" name="falta" maxlength="200" placeholder="Resposta curta">
+        <label>O que falta no Smash do Cabo?</label>
+        <input type="text" name="falta">
       </div>
 
       <div class="linha">
-        <label>Em uma escala de 0 a 10 o quanto você indicaria o Smash do Cabo para um amigo ou familiar? *</label>
+        <label>Indicação para amigos/familiares (0 a 10) *</label>
         <select name="indicacao" required>
           <option value="">Selecione</option>
           <option value="0">0</option><option value="1">1</option><option value="2">2</option>
@@ -179,12 +192,48 @@
       </div>
 
       <div class="linha">
-        <label>Coloque aqui sua sugestão ou elogio para a Smash do Cabo:</label>
-        <textarea name="sugestao" rows="3" cols="50" placeholder="Escreva sua sugestão ou elogio"></textarea>
+        <label>Sugestão ou elogio</label>
+        <textarea name="sugestao" rows="3"></textarea>
       </div>
 
       <button type="submit">Enviar</button>
     </form>
   </div>
+
+  <script>
+    const SUPABASE_URL = 'https://kwktdbinfadztnkghuul.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3a3RkYmluZmFkenRua2dodXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NzI5NjAsImV4cCI6MjA2MzU0ODk2MH0.jN-ggFrIE1x_4kO8KE5G_bZq6V1yFT1El64oQ_ELubY';
+
+    document.getElementById('formularioPesquisa').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form));
+
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/feedback_detalhado`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...data,
+          atendimento: parseInt(data.atendimento),
+          qualidade: parseInt(data.qualidade),
+          tempo: parseInt(data.tempo),
+          variedade: parseInt(data.variedade),
+          custobeneficio: parseInt(data.custobeneficio),
+          indicacao: parseInt(data.indicacao),
+          data_nascimento: data.data_nascimento || null
+        })
+      });
+
+      if (response.ok) {
+        window.location.href = "https://jenicqn.github.io/smashdocabo/obrigado.html";
+      } else {
+        alert("Erro ao enviar. Tente novamente.");
+      }
+    });
+  </script>
 </body>
 </html>
