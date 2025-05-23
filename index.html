@@ -54,22 +54,27 @@
     /* Estrelas alinhadas à esquerda */
     .estrelas {
   display: flex;
-  flex-direction: row-reverse; /* inverte para que a estrela 5 fique à esquerda */
+  flex-direction: row-reverse; /* para que o primeiro input seja o último visualmente */
   justify-content: flex-start;
   gap: 5px;
 }
-.estrelas input { display: none; }
+.estrelas input {
+  display: none;
+}
 .estrelas label {
   font-size: 2em;
   color: #ccc;
   cursor: pointer;
   transition: color 0.2s;
 }
+
+/* cor para as estrelas selecionadas e anteriores */
 .estrelas input:checked ~ label,
 .estrelas label:hover,
 .estrelas label:hover ~ label {
   color: gold;
 }
+
 
     /* Botões de indicação */
     .indicacao-botoes {
@@ -136,77 +141,80 @@
 
       <div class="linha"><label>Como você avalia o nosso ATENDIMENTO? *</label>
         <div class="estrelas">
-  <input type="radio" id="att1" name="atendimento" value="1" required />
-  <label for="att1">★</label>
-  <input type="radio" id="att2" name="atendimento" value="2" />
-  <label for="att2">★</label>
-  <input type="radio" id="att3" name="atendimento" value="3" />
-  <label for="att3">★</label>
+  <input type="radio" id="att5" name="atendimento" value="5" required />
+  <label for="att5">★</label>
   <input type="radio" id="att4" name="atendimento" value="4" />
   <label for="att4">★</label>
-  <input type="radio" id="att5" name="atendimento" value="5" />
-  <label for="att5">★</label>
+  <input type="radio" id="att3" name="atendimento" value="3" />
+  <label for="att3">★</label>
+  <input type="radio" id="att2" name="atendimento" value="2" />
+  <label for="att2">★</label>
+  <input type="radio" id="att1" name="atendimento" value="1" />
+  <label for="att1">★</label>
 </div>
 
 
       <div class="linha"><label>Qualidade dos produtos *</label>
         <div class="estrelas">
-  <input type="radio" id="att1" name="atendimento" value="1" required />
-  <label for="att1">★</label>
-  <input type="radio" id="att2" name="atendimento" value="2" />
-  <label for="att2">★</label>
-  <input type="radio" id="att3" name="atendimento" value="3" />
-  <label for="att3">★</label>
+  <input type="radio" id="att5" name="atendimento" value="5" required />
+  <label for="att5">★</label>
   <input type="radio" id="att4" name="atendimento" value="4" />
   <label for="att4">★</label>
-  <input type="radio" id="att5" name="atendimento" value="5" />
-  <label for="att5">★</label>
+  <input type="radio" id="att3" name="atendimento" value="3" />
+  <label for="att3">★</label>
+  <input type="radio" id="att2" name="atendimento" value="2" />
+  <label for="att2">★</label>
+  <input type="radio" id="att1" name="atendimento" value="1" />
+  <label for="att1">★</label>
 </div>
 
 
       <div class="linha"><label>Tempo de espera *</label>
         <div class="estrelas">
-  <input type="radio" id="att1" name="atendimento" value="1" required />
-  <label for="att1">★</label>
-  <input type="radio" id="att2" name="atendimento" value="2" />
-  <label for="att2">★</label>
-  <input type="radio" id="att3" name="atendimento" value="3" />
-  <label for="att3">★</label>
+  <input type="radio" id="att5" name="atendimento" value="5" required />
+  <label for="att5">★</label>
   <input type="radio" id="att4" name="atendimento" value="4" />
   <label for="att4">★</label>
-  <input type="radio" id="att5" name="atendimento" value="5" />
-  <label for="att5">★</label>
+  <input type="radio" id="att3" name="atendimento" value="3" />
+  <label for="att3">★</label>
+  <input type="radio" id="att2" name="atendimento" value="2" />
+  <label for="att2">★</label>
+  <input type="radio" id="att1" name="atendimento" value="1" />
+  <label for="att1">★</label>
 </div>
+
 
 
       <div class="linha"><label>Variedade de produtos *</label>
         <div class="estrelas">
-  <input type="radio" id="att1" name="atendimento" value="1" required />
-  <label for="att1">★</label>
-  <input type="radio" id="att2" name="atendimento" value="2" />
-  <label for="att2">★</label>
-  <input type="radio" id="att3" name="atendimento" value="3" />
-  <label for="att3">★</label>
+  <input type="radio" id="att5" name="atendimento" value="5" required />
+  <label for="att5">★</label>
   <input type="radio" id="att4" name="atendimento" value="4" />
   <label for="att4">★</label>
-  <input type="radio" id="att5" name="atendimento" value="5" />
-  <label for="att5">★</label>
+  <input type="radio" id="att3" name="atendimento" value="3" />
+  <label for="att3">★</label>
+  <input type="radio" id="att2" name="atendimento" value="2" />
+  <label for="att2">★</label>
+  <input type="radio" id="att1" name="atendimento" value="1" />
+  <label for="att1">★</label>
 </div>
+
 
 
       <div class="linha"><label>Custo-benefício *</label>
         <div class="estrelas">
-  <input type="radio" id="att1" name="atendimento" value="1" required />
-  <label for="att1">★</label>
-  <input type="radio" id="att2" name="atendimento" value="2" />
-  <label for="att2">★</label>
-  <input type="radio" id="att3" name="atendimento" value="3" />
-  <label for="att3">★</label>
+  <input type="radio" id="att5" name="atendimento" value="5" required />
+  <label for="att5">★</label>
   <input type="radio" id="att4" name="atendimento" value="4" />
   <label for="att4">★</label>
-  <input type="radio" id="att5" name="atendimento" value="5" />
-  <label for="att5">★</label>
+  <input type="radio" id="att3" name="atendimento" value="3" />
+  <label for="att3">★</label>
+  <input type="radio" id="att2" name="atendimento" value="2" />
+  <label for="att2">★</label>
+  <input type="radio" id="att1" name="atendimento" value="1" />
+  <label for="att1">★</label>
 </div>
+
 
 
       <div class="linha"><label>Como chegou até a loja? *</label>
