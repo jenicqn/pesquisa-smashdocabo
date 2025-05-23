@@ -74,17 +74,10 @@
 .estrelas input:checked + label {
   color: gold;
 }
-
-/* Removendo a pintura das anteriores */
-/* Comentado para não pintar as anteriores */
-/* .estrelas input:checked + label ~ label {
-  color: gold;
-} */
-
-/* Mantém o hover padrão, pinta só a estrela e anteriores no hover */
+/* Remover efeito hover */
 .estrelas label:hover,
 .estrelas label:hover ~ label {
-  color: gold;
+  color: inherit; /* mantém a cor original, sem pintar */
 }
 
     /* Botões de indicação */
