@@ -174,58 +174,80 @@
     </form>
   </div>
 
-  <script>
+<script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Máscara de data ...
+      // Máscara de data
       const inputData = document.getElementById('data_nascimento');
-      inputData.addEventListener('input', e => {
-        let v = e.target.value.replace(/\D/g, '');
-        if (v.length > 2 && v.length <= 4) v = v.slice(0,2) + '/' + v.slice(2);
-        else if (v.length > 4) v = v.slice(0,2) + '/' + v.slice(2,4) + '/' + v.slice(4,8);
-        e.target.value = v;
-      });
-
-      // Botões de indicação ...
-      const cont = document.getElementById('indicacaoBotoes');
-      const inp = document.getElementById('inputIndicacao');
-      for (let i = 0; i <= 10; i++) {
-        const btn = document.createElement('button');
-        btn.type = 'button'; btn.textContent = i;
-        btn.classList.add(i <= 4 ? 'vermelho' : i <= 7 ? 'amarelo' : 'verde');
-        btn.addEventListener('click', () => {
-          cont.querySelectorAll('button').forEach(b => b.classList.remove('selecionado'));
-          btn.classList.add('selecionado'); inp.value = i;
+      if (inputData) {
+        inputData.addEventListener('input', e => {
+          let v = e.target.value.replace(/\D/g, '');
+          if (v.length > 2 && v.length <= 4) v = v.slice(0,2) + '/' + v.slice(2);
+          else if (v.length > 4) v = v.slice(0,2) + '/' + v.slice(2,4) + '/' + v.slice(4,8);
+          e.target.value = v;
         });
-        cont.appendChild(btn);
       }
 
-      // Envio do formulário ...
+      // Botões de indicação
+      const cont = document.getElementById('indicacaoBotoes');
+      const inp = document.getElementById('inputIndicacao');
+      if (cont && inp) {
+        for (let i = 0; i <= 10; i++) {
+          const btn = document.createElement('button');
+          btn.type = 'button'; btn.textContent = i;
+          btn.classList.add(i <= 4 ? 'vermelho' : i <= 7 ? 'amarelo' : 'verde');
+          btn.addEventListener('click', () => {
+            cont.querySelectorAll('button').forEach(b => b.classList.remove('selecionado'));
+            btn.classList.add('selecionado'); inp.value = i;
+          });
+          cont.appendChild(btn);
+        }
+      }
+
+      // Envio do formulário com prevenção de múltiplos envios
+      const form = document.getElementById('formularioPesquisa');
+      const submitBtn = form.querySelector('button[type="submit"]');
       const URL = 'https://kwktdbinfadztnkghuul.supabase.co/rest/v1/feedback_detalhado';
       const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3a3RkYmluZmFkenRua2dodXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NzI5NjAsImV4cCI6MjA2MzU0ODk2MH0.jN-ggFrIE1x_4kO8KE5G_bZq6V1yFT1El64oQ_ELubY';
-      document.getElementById('formularioPesquisa').addEventListener('submit', async e => {
+
+      form.addEventListener('submit', async e => {
         e.preventDefault();
-        const data = Object.fromEntries(new FormData(e.target));
-        const resp = await fetch(URL, { method: 'POST', headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ ...data, atendimento: +data.atendimento, qualidade: +data.qualidade, tempo: +data.tempo, variedade: +data.variedade, custobeneficio: +data.custobeneficio, indicacao: +data.indicacao, data_nascimento: data.data_nascimento || null }) });
+        // Desabilita botão para evitar duplicata
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando…';
+
+        const data = Object.fromEntries(new FormData(form));
+        const resp = await fetch(URL, {
+          method: 'POST',
+          headers: {
+            apikey: KEY,
+            Authorization: `Bearer ${KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            ...data,
+            atendimento: +data.atendimento,
+            qualidade: +data.qualidade,
+            tempo: +data.tempo,
+            variedade: +data.variedade,
+            custobeneficio: +data.custobeneficio,
+            indicacao: +data.indicacao,
+            data_nascimento: data.data_nascimento || null
+          })
+        });
+
         if (resp.ok) {
           localStorage.setItem('cliente_nome', data.nome);
           localStorage.setItem('cliente_email', data.email);
           localStorage.setItem('cliente_telefone', data.telefone);
           window.location.href = 'https://jenicqn.github.io/smashdocabo/obrigado.html';
-        } else alert('Erro ao enviar. Tente novamente.');
-      });
-
-      // Lógica de estrelas
-      document.querySelectorAll('.estrelas').forEach(rating => {
-        const inputs = Array.from(rating.querySelectorAll('input'));
-        const labels = Array.from(rating.querySelectorAll('label'));
-        function paint(idx) { labels.forEach((lbl,i) => lbl.classList.toggle('filled', i <= idx)); }
-        labels.forEach((lbl, idx) => {
-          lbl.addEventListener('click', () => { inputs[idx].checked = true; paint(idx); });
-          lbl.addEventListener('mouseover', () => paint(idx));
-        });
-        rating.addEventListener('mouseleave', () => { const checkedIdx = inputs.findIndex(i => i.checked); paint(checkedIdx); });
+        } else {
+          alert('Erro ao enviar. Tente novamente.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Enviar';
+        }
       });
     });
   </script>
+  
 </body>
 </html>
