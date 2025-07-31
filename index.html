@@ -26,10 +26,21 @@
     /* Logo responsiva e centralizada */
     .logo {
       display: block;
-      width: 100%;
-      max-width: 200px;  /* ajusta conforme desejar */
-      height: auto;
       margin: 0 auto 20px;
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+    }
+    /* Ajustes adicionais para telas menores */
+    @media (max-width: 767px) {
+      .logo {
+        max-width: 150px;
+      }
+    }
+    @media (max-width: 480px) {
+      .logo {
+        max-width: 120px;
+      }
     }
     label { display: block; margin: 15px 0 5px; font-weight: bold; }
     .linha { margin-bottom: 20px; }
@@ -59,7 +70,6 @@
     .selecionado.amarelo  { background-color: #ffc107; color: #000; }
     .selecionado.verde    { background-color: #198754; color: white; }
   </style>
-</head>
 <body>
   <div class="container">
     <img src="https://jenicqn.github.io/smashdocabo/logo.png" alt="Logo Smash do Cabo" class="logo" />
