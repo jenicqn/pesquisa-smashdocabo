@@ -30,6 +30,10 @@
       width: 140px;
       margin-bottom: 20px;
     }
+    .emoji {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
     h1 {
       color: #000;
       margin-bottom: 10px;
@@ -58,31 +62,42 @@
       font-size: 14px;
       color: #333;
     }
-    .emoji {
-      font-size: 48px;
-      margin-bottom: 10px;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="https://jenicqn.github.io/smashdocabo/logo.png" alt="Logo Smash do Cabo" class="logo" />
+    <img
+      src="https://jenicqn.github.io/smashdocabo/logo.png"
+      alt="Logo Smash do Cabo"
+      class="logo"
+    />
     <div class="emoji">🎉</div>
     <h1>Obrigado por responder nossa pesquisa!</h1>
     <p class="brinde">
-      🎁 Você ganhou:<br /><strong>1 Soda Italiana</strong>
+      🎁 Você ganhou:<br />
+      <strong>1 Soda Italiana</strong>
     </p>
     <p class="validade">
-    Válido para sua próxima visita na loja!<br>   Esse cupom expira em: <span id="validade"></span> </p>
+      Válido para sua próxima visita na loja!<br />
+      Esse cupom expira em: <span id="validade"></span>
+    </p>
     <p class="codigo" id="codigoCupom">Gerando seu código...</p>
-    <p class="nota">Apresente um print dessa tela na loja Smash do Cabo.</p>
+    <p class="nota">
+      Apresente um print dessa tela na loja Smash do Cabo.
+    </p>
   </div>
 
   <script>
-    const SUPABASE_URL = 'https://kwktdbinfadztnkghuul.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3a3RkYmluZmFkenRua2dodXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NzI5NjAsImV4cCI6MjA2MzU0ODk2MH0.jN-ggFrIE1x_4kO8KE5G_bZq6V1yFT1El64oQ_ELubY';
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Se alguém acessar direto sem enviar a pesquisa, volta ao formulário
+    if (!localStorage.getItem('cliente_telefone')) {
+      window.location.href = 'index.html';
+      return;
+    }
 
-    const brinde = "1 Soda Italiana";
+    const SUPABASE_URL      = 'https://kwktdbinfadztnkghuul.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3a3RkYmluZmFkenRua2dodXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NzI5NjAsImV4cCI6MjA2MzU0ODk2MH0.jN-ggFrIE1x_4kO8KE5G_bZq6V1yFT1El64oQ_ELubY';
+    const brinde            = '1 Soda Italiana';
 
     function gerarCodigoAleatorio() {
       const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -94,56 +109,65 @@
     }
 
     async function gerarOuBuscarCupom() {
-      const nome = localStorage.getItem('cliente_nome') || 'Cliente';
-      const email = localStorage.getItem('cliente_email') || '';
-      const telefone = localStorage.getItem('cliente_telefone') || '';
+      const nome     = localStorage.getItem('cliente_nome')    || 'Cliente';
+      const email    = localStorage.getItem('cliente_email')   || '';
+      const telefone = localStorage.getItem('cliente_telefone')|| '';
+      const hoje     = new Date().toISOString().split('T')[0];
 
-      // Buscar cupom existente válido e não utilizado
-      const hoje = new Date().toISOString().split('T')[0];
-      const resposta = await fetch(`${SUPABASE_URL}/rest/v1/cupons?cliente_telefone=eq.${telefone}&utilizado=eq.false&valido_ate=gte.${hoje}`, {
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      // 1) tenta buscar cupom existente
+      const respGet = await fetch(
+        `${SUPABASE_URL}/rest/v1/cupons?cliente_telefone=eq.${encodeURIComponent(telefone)}&utilizado=eq.false&valido_ate=gte.${hoje}`,
+        {
+          headers: {
+            apikey:        SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+          }
         }
-      });
-
-      const dados = await resposta.json();
+      );
+      const dados = await respGet.json();
 
       if (dados.length > 0) {
-        // Cupom existente encontrado
+        // já existe cupom válido
         const cupom = dados[0];
-        document.getElementById("validade").textContent = new Date(cupom.valido_ate).toLocaleDateString('pt-BR');
-        document.getElementById('codigoCupom').textContent = `Código do Cupom: ${cupom.codigo}`;
+        document.getElementById('validade').textContent =
+          new Date(cupom.valido_ate).toLocaleDateString('pt-BR');
+        document.getElementById('codigoCupom').textContent =
+          `Código do Cupom: ${cupom.codigo}`;
+
       } else {
-        // Não tem cupom, cria novo
-        const codigo = gerarCodigoAleatorio();
+        // cria novo cupom
+        const codigo   = gerarCodigoAleatorio();
         const validade = new Date();
         validade.setDate(validade.getDate() + 30);
+        const validoAte = validade.toISOString().split('T')[0];
 
-        document.getElementById("validade").textContent = validade.toLocaleDateString('pt-BR');
-        document.getElementById('codigoCupom').textContent = `Código do Cupom: ${codigo}`;
+        document.getElementById('validade').textContent =
+          validade.toLocaleDateString('pt-BR');
+        document.getElementById('codigoCupom').textContent =
+          `Código do Cupom: ${codigo}`;
 
         await fetch(`${SUPABASE_URL}/rest/v1/cupons`, {
           method: 'POST',
           headers: {
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            apikey:        SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             codigo,
-            cliente_nome: nome,
-            cliente_email: email,
-            cliente_telefone: telefone,
+            cliente_nome:      nome,
+            cliente_email:     email,
+            cliente_telefone:  telefone,
             brinde,
-            valido_ate: validade.toISOString().split('T')[0],
-            utilizado: false
+            valido_ate:        validoAte,
+            utilizado:         false
           })
         });
       }
     }
 
-    gerarOuBuscarCupom();
+    await gerarOuBuscarCupom();
+  });
   </script>
 </body>
 </html>
