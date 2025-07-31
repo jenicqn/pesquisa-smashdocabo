@@ -22,28 +22,29 @@
       max-width: 700px;
       width: 100%;
       box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+      text-align: center;
     }
     /* Logo responsiva e centralizada */
     .logo {
       display: block;
       margin: 0 auto 20px;
       width: 100%;
-      max-width: 200px;
+      max-width: 200px;    /* ajusta o tamanho máximo */
       height: auto;
     }
-    /* Ajustes adicionais para telas menores */
-    @media (max-width: 767px) {
+    /* Em telas menores, reduz ainda mais o logo */
+    @media (max-width: 600px) {
       .logo {
         max-width: 150px;
       }
     }
-    @media (max-width: 480px) {
+    @media (max-width: 400px) {
       .logo {
         max-width: 120px;
       }
     }
-    label { display: block; margin: 15px 0 5px; font-weight: bold; }
-    .linha { margin-bottom: 20px; }
+    label { display: block; margin: 15px 0 5px; font-weight: bold; text-align: left; }
+    .linha { margin-bottom: 20px; text-align: left; }
     select, input[type="text"], input[type="email"], textarea {
       width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;
     }
@@ -51,7 +52,7 @@
       padding: 12px 24px; font-size: 16px; background-color: #000; color: #fff;
       border: none; border-radius: 8px; cursor: pointer;
     }
-    .estrelas { display: flex; gap: 5px; }
+    .estrelas { display: flex; gap: 5px; justify-content: flex-start; }
     .estrelas input { display: none; }
     .estrelas label {
       font-size: 2em; color: #ccc; cursor: pointer; transition: color 0.2s;
@@ -70,6 +71,7 @@
     .selecionado.amarelo  { background-color: #ffc107; color: #000; }
     .selecionado.verde    { background-color: #198754; color: white; }
   </style>
+</head>
 <body>
   <div class="container">
     <img src="https://jenicqn.github.io/smashdocabo/logo.png" alt="Logo Smash do Cabo" class="logo" />
@@ -82,7 +84,14 @@
       <div class="linha"><label>Email *</label><input type="email" name="email" required /></div>
       <div class="linha">
         <label>Data de nascimento</label>
-        <input type="text" id="data_nascimento" name="data_nascimento" placeholder="dd/mm/aaaa" maxlength="10" pattern="\d{2}/\d{2}/\d{4}" />
+        <input
+          type="text"
+          id="data_nascimento"
+          name="data_nascimento"
+          placeholder="dd/mm/aaaa"
+          maxlength="10"
+          pattern="\d{2}/\d{2}/\d{4}"
+        />
       </div>
       <div class="linha">
         <label>Você é morador da cidade? *</label>
