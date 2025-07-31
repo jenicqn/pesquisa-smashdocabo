@@ -200,6 +200,11 @@
         submitBtn.textContent = 'Enviando…';
 
         const data = Object.fromEntries(new FormData(form));
+        if (data.data_nascimento) {
+  const [d,m,y] = data.data_nascimento.split('/');
+  data.data_nascimento = `${y}-${m}-${d}`;
+}
+
         const resp = await fetch(URL, {
           method: 'POST',
           headers: {
