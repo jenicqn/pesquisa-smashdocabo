@@ -65,15 +65,9 @@
       color: #ccc;
       cursor: pointer;
       transition: color 0.2s;
-      position: relative;
     }
     /* Estrelas preenchidas */
     .estrelas label.filled {
-      color: gold;
-    }
-    /* Preview ao passar o mouse */
-    .estrelas label:hover,
-    .estrelas label:hover ~ label {
       color: gold;
     }
     /* Botões de indicação */
@@ -94,8 +88,8 @@
       transition: background-color 0.3s, border-color 0.3s;
     }
     .indicacao-botoes button.vermelho { border-color: #dc3545; color: #dc3545; }
-    .indicacao-botoes button.amarelo { border-color: #ffc107; color: #856404; }
-    .indicacao-botoes button.verde   { border-color: #198754; color: #198754; }
+    .indicacao-botoes button.amarelo  { border-color: #ffc107; color: #856404; }
+    .indicacao-botoes button.verde    { border-color: #198754; color: #198754; }
     .indicacao-botoes button.selecionado.vermelho { background-color: #dc3545; color: white; }
     .indicacao-botoes button.selecionado.amarelo  { background-color: #ffc107; color: #000; }
     .indicacao-botoes button.selecionado.verde    { background-color: #198754; color: white; }
@@ -122,6 +116,7 @@
         <input type="radio" name="morador" value="Não, sou turista" required /> Não
       </div>
 
+      <!-- Perguntas de avaliação -->
       <div class="linha">
         <label>Como você avalia o nosso ATENDIMENTO? *</label>
         <div class="estrelas">
@@ -132,9 +127,7 @@
           <input type="radio" id="att5" name="atendimento" value="5" />             <label for="att5">★</label>
         </div>
       </div>
-
-      <!-- repetição para as outras perguntas de estrela -->
-      <!-- ... Qualidade, Tempo, Variedade, Custo-benefício ... -->
+      <!-- Duplicar o bloco acima para as demais perguntas: qualidade, tempo, variedade e custo-benefício -->
 
       <div class="linha"><label>Como chegou até a loja? *</label>
         <select name="origem" required>
@@ -163,25 +156,23 @@
   </div>
 
   <script>
-    // Máscara de data
     document.addEventListener('DOMContentLoaded', () => {
-      const input = document.getElementById('data_nascimento');
-      input.addEventListener('input', e => {
+      // Máscara de data
+      const inputData = document.getElementById('data_nascimento');
+      inputData.addEventListener('input', e => {
         let v = e.target.value.replace(/\D/g, '');
         if (v.length > 2 && v.length <= 4) v = v.slice(0,2) + '/' + v.slice(2);
         else if (v.length > 4) v = v.slice(0,2) + '/' + v.slice(2,4) + '/' + v.slice(4,8);
         e.target.value = v;
       });
 
-      // Botões de indicação 0-10
+      // Botões de indicação
       const cont = document.getElementById('indicacaoBotoes');
       const inp = document.getElementById('inputIndicacao');
       for (let i = 0; i <= 10; i++) {
         const btn = document.createElement('button');
         btn.type = 'button'; btn.textContent = i;
-        if (i <= 4) btn.classList.add('vermelho');
-        else if (i <= 7) btn.classList.add('amarelo');
-        else btn.classList.add('verde');
+        btn.classList.add(i <= 4 ? 'vermelho' : i <= 7 ? 'amarelo' : 'verde');
         btn.addEventListener('click', () => {
           cont.querySelectorAll('button').forEach(b => b.classList.remove('selecionado'));
           btn.classList.add('selecionado'); inp.value = i;
@@ -189,7 +180,7 @@
         cont.appendChild(btn);
       }
 
-      // Formulário
+      // Envio do formulário
       const URL = 'https://kwktdbinfadztnkghuul.supabase.co/rest/v1/feedback_detalhado';
       const KEY = 'eyJhbGciOiJIUz...';
       document.getElementById('formularioPesquisa').addEventListener('submit', async e => {
@@ -220,7 +211,7 @@
         } else alert('Erro ao enviar. Tente novamente.');
       });
 
-      // Rating stars
+      // Lógica de estrelas
       document.querySelectorAll('.estrelas').forEach(rating => {
         const inputs = Array.from(rating.querySelectorAll('input'));
         const labels = Array.from(rating.querySelectorAll('label'));
@@ -235,8 +226,8 @@
           lbl.addEventListener('mouseover', () => paint(idx));
         });
         rating.addEventListener('mouseleave', () => {
-          const check = inputs.findIndex(i => i.checked);
-          paint(check);
+          const checkedIdx = inputs.findIndex(i => i.checked);
+          paint(checkedIdx);
         });
       });
     });
