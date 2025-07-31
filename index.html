@@ -224,16 +224,19 @@
           })
         });
 
-        if (resp.ok) {
-          localStorage.setItem('cliente_nome', data.nome);
-          localStorage.setItem('cliente_email', data.email);
-          localStorage.setItem('cliente_telefone', data.telefone);
-          window.location.href = 'https://jenicqn.github.io/smashdocabo/obrigado.html';
-        } else {
-          alert('Erro ao enviar. Tente novamente.');
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Enviar';
-        }
+        if (!resp.ok) {
+  // 1) captura o JSON de erro que o Supabase retorna
+  const supaError = await resp.json();
+  console.error('Erro Supabase completo:', supaError);
+
+  // 2) mostra no alert o que vier de message ou details
+  alert(`Erro ao enviar: ${supaError.message || supaError.details}`);
+
+  // 3) reabilita o botão
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Enviar';
+  return;
+}
       });
     });
   </script>
