@@ -23,8 +23,21 @@
     h1 { margin: 6px 0 8px; color: #000; font-size: 22px; }
     .brinde { font-size: 18px; margin: 8px 0; }
     .brinde strong { color: #d32f2f; }
-    .validade { color: #000; font-weight: 600; margin: 8px 0 10px; font-size: 15px; }
-    .validade span { color: #22c55e; }
+.validade {
+  color: #000;
+  font-weight: 600;
+  margin: 8px 0 10px;
+  font-size: 15px;
+  line-height: 1.4;
+}    
+.validade .frase-principal {
+  display: block;
+  font-size: 20px;       /* 🔥 maior destaque */
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 4px;
+}
+.validade span { color: #22c55e; }
     .codigo { font-size: 18px; font-weight: 700; color: #0d47a1; margin: 8px 0 12px; word-break: break-word; }
     .qr-wrap { margin-top: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
     #qrcode { padding: 10px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; }
@@ -46,9 +59,9 @@
 
     <p class="brinde">🎁 Você ganhou:<br /><strong>1 Soda Italiana</strong></p>
     <p class="validade">
-      Válido para sua próxima visita na loja!<br />
-      Esse cupom expira em: <span id="validade">--/--/----</span>
-    </p>
+  <span class="frase-principal">Válido para sua próxima visita na loja!</span>
+  Esse cupom expira em: <span id="validade">--/--/----</span>
+</p>
 
     <p class="codigo" id="codigoCupom">Gerando seu código...</p>
 
