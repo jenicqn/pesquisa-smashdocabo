@@ -104,20 +104,25 @@
 
     // cria cupom novo
     async function criarCupom(codigo, validoAteISO, linkVerif) {
-      await fetch(`${SUPABASE_URL}/rest/v1/cupons`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          codigo,
-          cliente_nome: nome,
-          cliente_telefone: telefone,
-          brinde: BRINDE,
-          valido_ate: validoAteISO,
-          utilizado: false,
-          link_verificacao: linkVerif   // salva apenas o link; nada de imagem
-        })
-      });
-    }
+  const resp = await fetch(`${SUPABASE_URL}/rest/v1/cupons`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      codigo,
+      cliente_nome: nome,
+      cliente_telefone: telefone,
+      brinde: BRINDE,
+      valido_ate: validoAteISO,
+      utilizado: false,
+      link_verificacao: linkVerif
+    })
+  });
+  if (!resp.ok) {
+    const errTxt = await resp.text();
+    throw new Error(`Falha ao salvar cupom: ${resp.status} ${errTxt}`);
+  }
+}
+
 
     // atualiza link_verificacao se faltar
     async function garantirLinkVerificacao(codigo, linkVerif) {
