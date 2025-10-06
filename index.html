@@ -60,15 +60,10 @@
 </head>
 <body>
   <div class="container">
-<<<<<<< HEAD
-    <img src="https://jenicqn.github.io/smashdocabo/logo.png" alt="Logo Smash do Cabo" class="logo" />
-=======
     <img src="https://pesquisa.smashdocabo.com/logo.png" alt="Logo Smash do Cabo" class="logo" />
->>>>>>> 76d802c30197a81855fc994d2a6435d978e32e95
     <h1>Pesquisa - Smash do Cabo</h1>
 
     <form id="formularioPesquisa">
-      <!-- Dados Pessoais -->
       <div class="linha"><label>Nome *</label><input type="text" name="nome" required /></div>
       <div class="linha"><label>Telefone *</label><input type="text" name="telefone" required /></div>
       <div class="linha"><label>Email *</label><input type="email" name="email" required /></div>
@@ -82,7 +77,6 @@
         <input type="radio" name="morador" value="Não, sou turista" required /> Não
       </div>
 
-      <!-- Avaliações em estrelas -->
       <div class="linha">
         <label>Como você avalia o nosso ATENDIMENTO? *</label>
         <div class="estrelas">
@@ -219,12 +213,12 @@
         // payload
         const payload = {
           ...data,
-          atendimento:     +data.atendimento,
-          qualidade:       +data.qualidade,
-          tempo:           +data.tempo,
-          variedade:       +data.variedade,
+          atendimento:   +data.atendimento,
+          qualidade:     +data.qualidade,
+          tempo:         +data.tempo,
+          variedade:     +data.variedade,
           custobeneficio:  +data.custobeneficio,
-          indicacao:       +data.indicacao
+          indicacao:     +data.indicacao
         };
 
         try {
