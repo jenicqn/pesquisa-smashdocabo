@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Obrigado!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f97316;
+      margin: 0; padding: 0;
+      min-height: 100vh; display: grid; place-items: center;
+      color: #fff;
+    }
+    .container {
+      max-width: 520px; width: 100%; margin: 20px;
+      padding: 22px; background: #fff; color: #000;
+      border-radius: 16px; box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    .logo { max-width: 140px; width: 100%; height: auto; margin-bottom: 12px; }
+    .emoji { font-size: 44px; margin-bottom: 6px; }
+    h1 { margin: 6px 0 8px; color: #000; font-size: 22px; }
+    .brinde { font-size: 18px; margin: 8px 0; }
+    .brinde strong { color: #d32f2f; }
+    .validade { color: #000; font-weight: 600; margin: 8px 0 10px; font-size: 15px; }
+    .validade span { color: #22c55e; }
+    .codigo { font-size: 18px; font-weight: 700; color: #0d47a1; margin: 8px 0 12px; word-break: break-word; }
+    .qr-wrap { margin-top: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    #qrcode { padding: 10px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; }
+    .btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+    button {
+      appearance: none; border: none; cursor: pointer;
+      padding: 10px 14px; border-radius: 10px; font-weight: 600; font-size: 14px;
+      color: #fff; background: #0f172a;
+    }
+    button:hover { filter: brightness(.95); }
+    .hint { font-size: 12px; color: #555; margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="logo.png" alt="Logo Smash do Cabo" class="logo" />
+    <div class="emoji">🎉</div>
+    <h1>Obrigado por responder nossa pesquisa!</h1>
+
+    <p class="brinde">🎁 Você ganhou:<br /><strong>1 Soda Italiana</strong></p>
+    <p class="validade">
+      Válido para sua próxima visita na loja!<br />
+      Esse cupom expira em: <span id="validade">--/--/----</span>
+    </p>
+
+    <p class="codigo" id="codigoCupom">Gerando seu código...</p>
+
+    <div class="qr-wrap">
+      <div id="qrcode"></div>
+      <div class="btns">
+        <button id="btnCopy">Copiar código</button>
+      </div>
+      <div class="hint">Mostre este QR para o garçom escanear e validar seu brinde.</div>
+    </div>
+
+    <p class="hint" style="margin-top:12px">Ou apresente um print desta tela na loja Smash do Cabo.</p>
+  </div>
+
+  <!-- Biblioteca leve para gerar QR no navegador (sem salvar imagem) -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    // garante que veio do fluxo da pesquisa
+    if (!localStorage.getItem('cliente_telefone')) {
+      window.location.href = 'index.html';
+      return;
+    }
+
+    const SUPABASE_URL      = 'https://kwktdbinfadztnkghuul.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3a3RkYmluZmFkenRua2dodXVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5NzI5NjAsImV4cCI6MjA2MzU0ODk2MH0.jN-ggFrIE1x_4kO8KE5G_bZq6V1yFT1El64oQ_ELubY';
+    const BRINDE            = '1 Soda Italiana';
+
+    const nome     = localStorage.getItem('cliente_nome')     || 'Cliente';
+    const telefone = (localStorage.getItem('cliente_telefone')|| '').trim();
+    const hojeISO  = new Date().toISOString().split('T')[0];
+
+    const headers = {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json'
+    };
+
+    function gerarCodigoAleatorio() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let code = '';
+      for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+      return 'SMASH-' + code;
+    }
+
+    // busca cupom válido e não utilizado do cliente
+    async function buscarCupomValido() {
+      const url = `${SUPABASE_URL}/rest/v1/cupons?cliente_telefone=eq.${encodeURIComponent(telefone)}&utilizado=eq.false&valido_ate=gte.${hojeISO}`;
+      const r = await fetch(url, { headers });
+      return r.json();
+    }
+
+    // cria cupom novo
+    async function criarCupom(codigo, validoAteISO, linkVerif) {
+      await fetch(`${SUPABASE_URL}/rest/v1/cupons`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          codigo,
+          cliente_nome: nome,
+          cliente_telefone: telefone,
+          brinde: BRINDE,
+          valido_ate: validoAteISO,
+          utilizado: false,
+          link_verificacao: linkVerif   // salva apenas o link; nada de imagem
+        })
+      });
+    }
+
+    // atualiza link_verificacao se faltar
+    async function garantirLinkVerificacao(codigo, linkVerif) {
+      await fetch(`${SUPABASE_URL}/rest/v1/cupons?codigo=eq.${encodeURIComponent(codigo)}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ link_verificacao: linkVerif })
+      });
+    }
+
+    function montarUI(codigo, validadeISO, linkVerif) {
+      document.getElementById('validade').textContent = new Date(validadeISO).toLocaleDateString('pt-BR');
+      document.getElementById('codigoCupom').textContent = `Código do Cupom: ${codigo}`;
+
+      const qrel = document.getElementById('qrcode');
+      qrel.innerHTML = '';
+      new QRCode(qrel, { text: linkVerif, width: 160, height: 160 });
+
+      document.getElementById('btnCopy').onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(codigo);
+          const btn = document.getElementById('btnCopy');
+          const old = btn.textContent;
+          btn.textContent = 'Copiado ✔';
+          setTimeout(()=> btn.textContent = old, 1200);
+        } catch {
+          alert('Não foi possível copiar. Copie manualmente.');
+        }
+      };
+    }
+
+    // fluxo principal
+    const lista = await buscarCupomValido();
+
+    if (Array.isArray(lista) && lista.length > 0) {
+      const c = lista[0];
+      const link = c.link_verificacao || `https://verificacupom.smashdocabo.com/?codigo=${encodeURIComponent(c.codigo)}`;
+
+      // se não havia link no banco, grava agora (leve, sem imagem)
+      if (!c.link_verificacao) {
+        try { await garantirLinkVerificacao(c.codigo, link); } catch(_) {}
+      }
+
+      montarUI(c.codigo, c.valido_ate, link);
+    } else {
+      const codigo = gerarCodigoAleatorio();
+      const validade = new Date(); validade.setDate(validade.getDate() + 30);
+      const validoAteISO = validade.toISOString().split('T')[0];
+      const linkVerif = `https://verificacupom.smashdocabo.com/?codigo=${encodeURIComponent(codigo)}`;
+
+      await criarCupom(codigo, validoAteISO, linkVerif);
+      montarUI(codigo, validoAteISO, linkVerif);
+    }
+  });
+  </script>
+</body>
+</html>
