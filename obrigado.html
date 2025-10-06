@@ -4,52 +4,8 @@
   <meta charset="UTF-8" />
   <title>Obrigado!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f97316;
-      margin: 0; padding: 0;
-      min-height: 100vh; display: grid; place-items: center;
-      color: #fff;
-    }
-    .container {
-      max-width: 520px; width: 100%; margin: 20px;
-      padding: 22px; background: #fff; color: #000;
-      border-radius: 16px; box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      text-align: center;
-    }
-    .logo { max-width: 140px; width: 100%; height: auto; margin-bottom: 12px; }
-    .emoji { font-size: 44px; margin-bottom: 6px; }
-    h1 { margin: 6px 0 8px; color: #000; font-size: 22px; }
-    .brinde { font-size: 18px; margin: 8px 0; }
-    .brinde strong { color: #d32f2f; }
-.validade {
-  color: #000;
-  font-weight: 600;
-  margin: 8px 0 10px;
-  font-size: 15px;
-  line-height: 1.4;
-}    
-.validade .frase-principal {
-  display: block;
-  font-size: 20px;       /* 🔥 maior destaque */
-  font-weight: 700;
-  color: #f97316;
-  margin-bottom: 4px;
-}
-.validade span { color: #22c55e; }
-    .codigo { font-size: 18px; font-weight: 700; color: #0d47a1; margin: 8px 0 12px; word-break: break-word; }
-    .qr-wrap { margin-top: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-    #qrcode { padding: 10px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; }
-    .btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
-    button {
-      appearance: none; border: none; cursor: pointer;
-      padding: 10px 14px; border-radius: 10px; font-weight: 600; font-size: 14px;
-      color: #fff; background: #0f172a;
-    }
-    button:hover { filter: brightness(.95); }
-    .hint { font-size: 12px; color: #555; margin-top: 2px; }
-  </style>
+  <link rel="stylesheet" href="obrigado.css" />
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -57,11 +13,19 @@
     <div class="emoji">🎉</div>
     <h1>Obrigado por responder nossa pesquisa!</h1>
 
-    <p class="brinde">🎁 Você ganhou:<br /><strong>1 Soda Italiana</strong></p>
+    <img src="DSC00280.png" alt="Soda Italiana" class="soda-photo" />
+
+    <p class="brinde">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke="#f97316" fill="none" viewBox="0 0 24 24">
+        <path stroke-width="2" d="M6 6h12v12H6zM9 9h6v6H9z"/>
+      </svg>
+      Você ganhou:<br /><strong>1 Soda Italiana</strong>
+    </p>
+
     <p class="validade">
-  <span class="frase-principal">Válido para sua próxima visita na loja!</span>
-  Esse cupom expira em: <span id="validade">--/--/----</span>
-</p>
+      <span class="frase-principal">Válido para sua próxima visita na loja!</span>
+      Esse cupom expira em: <span id="validade">--/--/----</span>
+    </p>
 
     <p class="codigo" id="codigoCupom">Gerando seu código...</p>
 
@@ -69,15 +33,13 @@
       <div id="qrcode"></div>
       <div class="btns">
         <button id="btnCopy">Copiar código</button>
-          <p class="hint" style="margin-top:12px">Salve este código ou apresente um print desta tela na loja Smash do Cabo.</p>
+      </div>
+      <p class="hint">Mostre este QR ao garçom e valide seu brinde 🍹</p>
+    </div>
   </div>
-
-  <!-- Biblioteca leve para gerar QR no navegador (sem salvar imagem) -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
   <script>
   document.addEventListener('DOMContentLoaded', async () => {
-    // garante que veio do fluxo da pesquisa
     if (!localStorage.getItem('cliente_telefone')) {
       window.location.href = 'index.html';
       return;
@@ -104,36 +66,32 @@
       return 'SMASH-' + code;
     }
 
-    // busca cupom válido e não utilizado do cliente
     async function buscarCupomValido() {
       const url = `${SUPABASE_URL}/rest/v1/cupons?cliente_telefone=eq.${encodeURIComponent(telefone)}&utilizado=eq.false&valido_ate=gte.${hojeISO}`;
       const r = await fetch(url, { headers });
       return r.json();
     }
 
-    // cria cupom novo
     async function criarCupom(codigo, validoAteISO, linkVerif) {
-  const resp = await fetch(`${SUPABASE_URL}/rest/v1/cupons`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      codigo,
-      cliente_nome: nome,
-      cliente_telefone: telefone,
-      brinde: BRINDE,
-      valido_ate: validoAteISO,
-      utilizado: false,
-      link_verificacao: linkVerif
-    })
-  });
-  if (!resp.ok) {
-    const errTxt = await resp.text();
-    throw new Error(`Falha ao salvar cupom: ${resp.status} ${errTxt}`);
-  }
-}
+      const resp = await fetch(`${SUPABASE_URL}/rest/v1/cupons`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          codigo,
+          cliente_nome: nome,
+          cliente_telefone: telefone,
+          brinde: BRINDE,
+          valido_ate: validoAteISO,
+          utilizado: false,
+          link_verificacao: linkVerif
+        })
+      });
+      if (!resp.ok) {
+        const errTxt = await resp.text();
+        throw new Error(`Falha ao salvar cupom: ${resp.status} ${errTxt}`);
+      }
+    }
 
-
-    // atualiza link_verificacao se faltar
     async function garantirLinkVerificacao(codigo, linkVerif) {
       await fetch(`${SUPABASE_URL}/rest/v1/cupons?codigo=eq.${encodeURIComponent(codigo)}`, {
         method: 'PATCH',
@@ -163,18 +121,14 @@
       };
     }
 
-    // fluxo principal
     const lista = await buscarCupomValido();
 
     if (Array.isArray(lista) && lista.length > 0) {
       const c = lista[0];
       const link = c.link_verificacao || `https://verificacupom.smashdocabo.com/?codigo=${encodeURIComponent(c.codigo)}`;
-
-      // se não havia link no banco, grava agora (leve, sem imagem)
       if (!c.link_verificacao) {
         try { await garantirLinkVerificacao(c.codigo, link); } catch(_) {}
       }
-
       montarUI(c.codigo, c.valido_ate, link);
     } else {
       const codigo = gerarCodigoAleatorio();
