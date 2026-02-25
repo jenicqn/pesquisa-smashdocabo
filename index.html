@@ -236,9 +236,18 @@
           });
 
           if (!resp.ok) {
-            const err = await resp.json();
-            throw new Error(err.message || JSON.stringify(err));
-          }
+  const err = await resp.json();
+
+  // Erro 23505 = tentativa duplicada no mesmo dia
+  if (err.code === "23505") {
+    alert("Você já respondeu nossa pesquisa hoje 💛\nVolte amanhã para resgatar seu brinde e participar novamente!");
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Enviar';
+    return;
+  }
+
+  throw new Error(err.message || JSON.stringify(err));
+}
 
           // salva e redireciona
           localStorage.setItem('cliente_nome', data.nome);
