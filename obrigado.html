@@ -1,5 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Obrigado!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f97316;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      background: #fff;
+      max-width: 480px;
+      width: 100%;
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .logo {
+      width: 140px;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin: 10px 0 20px;
+    }
+
+    .codigo {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 15px 0;
+      color: #f97316;
+    }
+
+    #qrcode {
+      margin: 20px auto;
+    }
+
+    button {
+      background: #f97316;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .validade {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <img src="logo.png" class="logo" />
+
+    <h1>Obrigado por responder nossa pesquisa 🎉</h1>
+
+    <p><strong>Você ganhou:</strong> 1 Soda Italiana</p>
+
+    <p class="validade">
+      Válido até: <span id="validade">--/--/----</span>
+    </p>
+
+    <p id="codigoCupom" class="codigo">Gerando código...</p>
+
+    <div id="qrcode"></div>
+
+    <button id="btnCopy">Copiar código</button>
+
+    <p style="margin-top:15px;font-size:13px;">
+      Tire um print dessa tela e apresente na loja 🍹
+    </p>
+  </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
+
   if (!localStorage.getItem('cliente_telefone')) {
     window.location.href = 'index.html';
     return;
@@ -9,9 +104,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlZXpwbXBtcWtpb2N2dnBjd3FhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NTI2NTUsImV4cCI6MjA4NzUyODY1NX0.M-TpjLCmwA6jyUFXG33o-L8O_1o84Ap4GM9vtxAa4KQ';
   const BRINDE = '1 Soda Italiana';
 
-  const nome     = localStorage.getItem('cliente_nome') || 'Cliente';
-  const telefone = (localStorage.getItem('cliente_telefone') || '').trim();
-  const hojeISO  = new Date().toISOString().split('T')[0];
+  const nome = localStorage.getItem('cliente_nome') || 'Cliente';
+  const telefone = localStorage.getItem('cliente_telefone').trim();
+  const hojeISO = new Date().toISOString().split('T')[0];
 
   const headers = {
     apikey: SUPABASE_ANON_KEY,
@@ -19,7 +114,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     'Content-Type': 'application/json'
   };
 
-  function gerarCodigoAleatorio() {
+  function gerarCodigo() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let code = '';
     for (let i = 0; i < 4; i++) {
@@ -28,14 +123,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     return 'SMASH-' + code;
   }
 
-  async function buscarCupomValido() {
-    const url = `${SUPABASE_URL}/rest/v1/cupons?cliente_telefone=eq.${encodeURIComponent(telefone)}&utilizado=eq.false&valido_ate=gte.${hojeISO}`;
-    const r = await fetch(url, { headers });
-    return r.json();
+  async function buscarCupom() {
+    const url = `${SUPABASE_URL}/rest/v1/cupons?cliente_telefone=eq.${telefone}&utilizado=eq.false&valido_ate=gte.${hojeISO}`;
+    const res = await fetch(url, { headers });
+    return res.json();
   }
 
-  async function criarCupom(codigo, validoAteISO, linkVerif) {
-    const resp = await fetch(`${SUPABASE_URL}/rest/v1/cupons`, {
+  async function criarCupom(codigo, validadeISO, link) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/cupons`, {
       method: 'POST',
       headers,
       body: JSON.stringify({
@@ -43,94 +138,67 @@ document.addEventListener('DOMContentLoaded', async () => {
         cliente_nome: nome,
         cliente_telefone: telefone,
         brinde: BRINDE,
-        valido_ate: validoAteISO,
+        valido_ate: validadeISO,
         utilizado: false,
-        link_verificacao: linkVerif
+        link_verificacao: link
       })
     });
 
-    if (!resp.ok) {
-      const errTxt = await resp.text();
-      throw new Error(`Falha ao salvar cupom: ${resp.status} ${errTxt}`);
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err);
     }
   }
 
-  async function garantirLinkVerificacao(codigo, linkVerif) {
-    await fetch(`${SUPABASE_URL}/rest/v1/cupons?codigo=eq.${encodeURIComponent(codigo)}`, {
-      method: 'PATCH',
-      headers,
-      body: JSON.stringify({ link_verificacao: linkVerif })
-    });
-  }
-
-  function montarUI(codigo, validadeISO, linkVerif) {
-    const elValidade = document.getElementById('validade');
-    const elCodigo = document.getElementById('codigoCupom');
-    const elQr = document.getElementById('qrcode');
-    const elBtn = document.getElementById('btnCopy');
-
-    if (!elValidade || !elCodigo || !elQr || !elBtn) {
-      console.error('Elemento HTML não encontrado.');
-      return;
-    }
-
-    elValidade.textContent =
+  function renderizar(codigo, validadeISO, link) {
+    document.getElementById('validade').textContent =
       new Date(validadeISO).toLocaleDateString('pt-BR');
 
-    elCodigo.textContent =
-      `Código do Cupom: ${codigo}`;
+    document.getElementById('codigoCupom').textContent =
+      codigo;
 
-    elQr.innerHTML = '';
+    const qr = document.getElementById('qrcode');
+    qr.innerHTML = '';
 
-    new QRCode(elQr, {
-      text: linkVerif,
-      width: 160,
-      height: 160
+    new QRCode(qr, {
+      text: link,
+      width: 150,
+      height: 150
     });
 
-    elBtn.onclick = async () => {
-      try {
-        await navigator.clipboard.writeText(codigo);
-        const old = elBtn.textContent;
-        elBtn.textContent = 'Copiado ✔';
-        setTimeout(() => elBtn.textContent = old, 1200);
-      } catch {
-        alert('Não foi possível copiar.');
-      }
+    document.getElementById('btnCopy').onclick = async () => {
+      await navigator.clipboard.writeText(codigo);
+      alert('Código copiado!');
     };
   }
 
   try {
-    const lista = await buscarCupomValido();
 
-    if (Array.isArray(lista) && lista.length > 0) {
+    const lista = await buscarCupom();
+
+    if (lista.length > 0) {
       const c = lista[0];
       const link = c.link_verificacao ||
-        `https://verificacupom.smashdocabo.com/?codigo=${encodeURIComponent(c.codigo)}`;
-
-      if (!c.link_verificacao) {
-        try { await garantirLinkVerificacao(c.codigo, link); } catch {}
-      }
-
-      montarUI(c.codigo, c.valido_ate, link);
-
+        `https://verificacupom.smashdocabo.com/?codigo=${c.codigo}`;
+      renderizar(c.codigo, c.valido_ate, link);
     } else {
-      const codigo = gerarCodigoAleatorio();
-
+      const codigo = gerarCodigo();
       const validade = new Date();
       validade.setDate(validade.getDate() + 30);
-      const validoAteISO = validade.toISOString().split('T')[0];
+      const validadeISO = validade.toISOString().split('T')[0];
+      const link = `https://verificacupom.smashdocabo.com/?codigo=${codigo}`;
 
-      const linkVerif =
-        `https://verificacupom.smashdocabo.com/?codigo=${encodeURIComponent(codigo)}`;
-
-      await criarCupom(codigo, validoAteISO, linkVerif);
-      montarUI(codigo, validoAteISO, linkVerif);
+      await criarCupom(codigo, validadeISO, link);
+      renderizar(codigo, validadeISO, link);
     }
 
-  } catch (err) {
-    console.error('Erro ao gerar cupom:', err);
-    alert('Erro ao gerar seu cupom.');
+  } catch (erro) {
+    console.error('Erro:', erro);
+    alert('Erro ao gerar cupom.');
   }
+
 });
 </script>
+
+</body>
+</html>
