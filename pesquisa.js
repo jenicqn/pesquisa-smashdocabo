@@ -106,9 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!resp.ok) {
 
-  const err = await resp.json();
-
-  // 409 = tentativa duplicada no mesmo dia
   if (resp.status === 409) {
     alert("Você já respondeu nossa pesquisa hoje 💛\nVolte amanhã para participar novamente!");
     submitBtn.disabled = false;
@@ -116,7 +113,16 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  throw new Error(err.message || JSON.stringify(err));
+  let errorMessage = "Erro inesperado.";
+
+  try {
+    const err = await resp.json();
+    errorMessage = err.message || JSON.stringify(err);
+  } catch {
+    errorMessage = await resp.text();
+  }
+
+  throw new Error(errorMessage);
 }
 
       // Salva dados para gerar cupom
