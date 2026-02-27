@@ -51,11 +51,23 @@
     </div>
 
     <div class="linha">
-      <label>Você é morador da cidade? *</label>
-      <span class="traducao">¿Eres residente? / Are you a resident?</span>
-      <input type="radio" name="morador" value="Sim, sou morador" required> Sim<br>
-      <input type="radio" name="morador" value="Não, sou turista" required> Não
-    </div>
+  <label>Você é morador da cidade? *</label>
+  <span class="traducao">¿Eres residente? / Are you a resident?</span>
+
+  <div class="radio-group">
+    <label class="radio-item">
+      <input type="radio" name="morador" value="Sim, sou morador" required>
+      Sim
+      <span class="traducao-inline">Sí / Yes</span>
+    </label>
+
+    <label class="radio-item">
+      <input type="radio" name="morador" value="Não, sou turista" required>
+      Não
+      <span class="traducao-inline">No / Tourist</span>
+    </label>
+  </div>
+</div>
 
     <div class="linha">
       <label>Como você avalia o nosso ATENDIMENTO? *</label>
