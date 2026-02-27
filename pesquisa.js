@@ -105,9 +105,19 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (!resp.ok) {
-        const err = await resp.json();
-        throw new Error(err.message || JSON.stringify(err));
-      }
+
+  const err = await resp.json();
+
+  // 409 = tentativa duplicada no mesmo dia
+  if (resp.status === 409) {
+    alert("Você já respondeu nossa pesquisa hoje 💛\nVolte amanhã para participar novamente!");
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Enviar";
+    return;
+  }
+
+  throw new Error(err.message || JSON.stringify(err));
+}
 
       // Salva dados para gerar cupom
       localStorage.setItem("cliente_nome", data.nome);
