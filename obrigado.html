@@ -65,20 +65,41 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function montarUI(codigo, validadeISO, linkVerif) {
-    document.getElementById('validade').textContent =
-      new Date(validadeISO).toLocaleDateString('pt-BR');
+  const elValidade = document.getElementById('validade');
+  const elCodigo = document.getElementById('codigoCupom');
+  const elQr = document.getElementById('qrcode');
+  const elBtn = document.getElementById('btnCopy');
 
-    document.getElementById('codigoCupom').textContent =
-      `Código do Cupom: ${codigo}`;
+  if (!elValidade || !elCodigo || !elQr || !elBtn) {
+    console.error('Algum elemento do HTML não foi encontrado.');
+    return;
+  }
 
-    const qrel = document.getElementById('qrcode');
-    qrel.innerHTML = '';
+  elValidade.textContent =
+    new Date(validadeISO).toLocaleDateString('pt-BR');
 
-    new QRCode(qrel, {
-      text: linkVerif,
-      width: 160,
-      height: 160
-    });
+  elCodigo.textContent =
+    `Código do Cupom: ${codigo}`;
+
+  elQr.innerHTML = '';
+
+  new QRCode(elQr, {
+    text: linkVerif,
+    width: 160,
+    height: 160
+  });
+
+  elBtn.onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(codigo);
+      const old = elBtn.textContent;
+      elBtn.textContent = 'Copiado ✔';
+      setTimeout(() => elBtn.textContent = old, 1200);
+    } catch {
+      alert('Não foi possível copiar. Copie manualmente.');
+    }
+  };
+}
 
     document.getElementById('btnCopy').onclick = async () => {
       try {
