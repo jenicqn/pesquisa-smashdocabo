@@ -4,9 +4,7 @@
   <meta charset="UTF-8" />
   <title>Pesquisa Smash do Cabo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <p style="margin-top: 8px; margin-bottom: 24px; font-size: 16px; font-weight: 600;">
-  Responda e ganhe um brinde exclusivo para utilizar na sua próxima visita na loja!
-</p>
+
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -18,6 +16,7 @@
       flex-direction: column;
       align-items: center;
     }
+
     .container {
       background-color: #fff;
       padding: 30px;
@@ -27,66 +26,158 @@
       box-shadow: 0 12px 24px rgba(0,0,0,0.15);
       text-align: center;
     }
+
     .logo {
-      display: block !important;
-      margin: 0 auto 20px !important;
-      width: auto !important;
-      max-width: 200px !important;
-      height: auto !important;
+      display: block;
+      margin: 0 auto 20px;
+      max-width: 200px;
     }
-    label { display: block; margin: 15px 0 5px; font-weight: bold; text-align: left; }
-    .linha { margin-bottom: 20px; text-align: left; }
+
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+      text-align: left;
+    }
+
+    .traducao {
+      display: block;
+      font-size: 13px;
+      color: #777;
+      font-weight: normal;
+      margin-top: 4px;
+      line-height: 1.3;
+    }
+
+    .linha {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
     select, input[type="text"], input[type="email"], textarea {
-      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
+
     button[type="submit"] {
-      padding: 12px 24px; font-size: 16px; background-color: #000; color: #fff;
-      border: none; border-radius: 8px; cursor: pointer;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #000;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
-    .estrelas { display: flex; gap: 5px; justify-content: flex-start; }
+
+    .estrelas {
+      display: flex;
+      gap: 5px;
+    }
+
     .estrelas input { display: none; }
-    .estrelas label { font-size: 2em; color: #ccc; cursor: pointer; transition: color 0.2s; }
-    .estrelas label.filled { color: gold; }
-    .indicacao-botoes { display: flex; gap: 6px; margin-top: 6px; }
-    .indicacao-botoes button {
-      width: 32px; height: 32px; border-radius: 50%; background-color: white;
-      border: 2px solid gray; font-weight: bold; cursor: pointer; user-select: none;
-      transition: background-color 0.3s, border-color 0.3s;
+
+    .estrelas label {
+      font-size: 2em;
+      color: #ccc;
+      cursor: pointer;
     }
+
+    .estrelas label.filled { color: gold; }
+
+    .indicacao-botoes {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .indicacao-botoes button {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid gray;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
     .vermelho { border-color: #dc3545; color: #dc3545; }
     .amarelo  { border-color: #ffc107; color: #856404; }
     .verde    { border-color: #198754; color: #198754; }
-    .selecionado.vermelho { background-color: #dc3545; color: white; }
-    .selecionado.amarelo  { background-color: #ffc107; color: #000; }
-    .selecionado.verde    { background-color: #198754; color: white; }
+
+    .selecionado.vermelho { background: #dc3545; color: white; }
+    .selecionado.amarelo  { background: #ffc107; color: black; }
+    .selecionado.verde    { background: #198754; color: white; }
   </style>
 </head>
+
 <body>
   <div class="container">
-    <img src="https://pesquisa.smashdocabo.com/logo.png" alt="Logo Smash do Cabo" class="logo" />
+    <img src="https://pesquisa.smashdocabo.com/logo.png" class="logo" />
     <h1>Pesquisa - Smash do Cabo</h1>
 
     <form id="formularioPesquisa">
-      <div class="linha"><label>Nome *</label><input type="text" name="nome" required /></div>
-      <div class="linha"><label>Telefone *</label><input type="text" name="telefone" required /></div>
-      <div class="linha"><label>Email *</label><input type="email" name="email" required /></div>
+
       <div class="linha">
-        <label>Data de nascimento</label>
-        <input type="text" id="data_nascimento" name="data_nascimento" placeholder="dd/mm/aaaa" maxlength="10" pattern="\d{2}/\d{2}/\d{4}" />
-      </div>
-      <div class="linha">
-        <label>Indicação para amigos (0 a 10) *</label>
-        <div class="indicacao-botoes" id="indicacaoBotoes"></div>
-        <input type="hidden" name="indicacao" id="inputIndicacao" required />
-      </div>
-      <div class="linha">
-        <label>Você é morador da cidade? *</label>
-        <input type="radio" name="morador" value="Sim, sou morador" required /> Sim
-        <input type="radio" name="morador" value="Não, sou turista" required /> Não
+        <label>
+          Nome *
+          <span class="traducao">Nombre / Name</span>
+        </label>
+        <input type="text" name="nome" required />
       </div>
 
       <div class="linha">
-        <label>Como você avalia o nosso ATENDIMENTO? *</label>
+        <label>
+          Telefone *
+          <span class="traducao">Teléfono / Phone</span>
+        </label>
+        <input type="text" name="telefone" required />
+      </div>
+
+      <div class="linha">
+        <label>
+          Email *
+          <span class="traducao">Correo electrónico / Email</span>
+        </label>
+        <input type="email" name="email" required />
+      </div>
+
+      <div class="linha">
+        <label>
+          De 0 a 10, o quanto você indicaria nossa loja para um amigo? *
+          <span class="traducao">
+            De 0 a 10, ¿cuánto recomendaría nuestra tienda a un amigo?<br>
+            From 0 to 10, how likely are you to recommend our store?
+          </span>
+        </label>
+        <div class="indicacao-botoes" id="indicacaoBotoes"></div>
+        <input type="hidden" name="indicacao" id="inputIndicacao" required />
+      </div>
+
+      <div class="linha">
+        <label>
+          Você é morador da cidade? *
+          <span class="traducao">
+            ¿Eres residente? / Are you a resident?
+          </span>
+        </label>
+        <input type="radio" name="morador" value="Sim, sou morador" required /> 
+        Sim <span class="traducao">Sí / Yes</span>
+        <br>
+        <input type="radio" name="morador" value="Não, sou turista" required /> 
+        Não <span class="traducao">No / Tourist</span>
+      </div>
+
+      <div class="linha">
+        <label>
+          Como você avalia o nosso ATENDIMENTO? *
+          <span class="traducao">
+            ¿Cómo evalúa nuestro servicio?<br>
+            How do you rate our service?
+          </span>
+        </label>
         <div class="estrelas">
           <input type="radio" id="att1" name="atendimento" value="1" required /><label for="att1">★</label>
           <input type="radio" id="att2" name="atendimento" value="2" /><label for="att2">★</label>
@@ -95,183 +186,60 @@
           <input type="radio" id="att5" name="atendimento" value="5" /><label for="att5">★</label>
         </div>
       </div>
+
       <div class="linha">
-        <label>Qualidade dos produtos *</label>
-        <div class="estrelas">
-          <input type="radio" id="qual1" name="qualidade" value="1" required /><label for="qual1">★</label>
-          <input type="radio" id="qual2" name="qualidade" value="2" /><label for="qual2">★</label>
-          <input type="radio" id="qual3" name="qualidade" value="3" /><label for="qual3">★</label>
-          <input type="radio" id="qual4" name="qualidade" value="4" /><label for="qual4">★</label>
-          <input type="radio" id="qual5" name="qualidade" value="5" /><label for="qual5">★</label>
-        </div>
+        <label>
+          Sugestão ou elogio
+          <span class="traducao">Sugerencia o comentario / Suggestion or comment</span>
+        </label>
+        <textarea name="sugestao" rows="3"></textarea>
       </div>
-      <div class="linha">
-        <label>Tempo de espera *</label>
-        <div class="estrelas">
-          <input type="radio" id="tempo1" name="tempo" value="1" required /><label for="tempo1">★</label>
-          <input type="radio" id="tempo2" name="tempo" value="2" /><label for="tempo2">★</label>
-          <input type="radio" id="tempo3" name="tempo" value="3" /><label for="tempo3">★</label>
-          <input type="radio" id="tempo4" name="tempo" value="4" /><label for="tempo4">★</label>
-          <input type="radio" id="tempo5" name="tempo" value="5" /><label for="tempo5">★</label>
-        </div>
-      </div>
-      <div class="linha">
-        <label>Variedade de produtos *</label>
-        <div class="estrelas">
-          <input type="radio" id="var1" name="variedade" value="1" required /><label for="var1">★</label>
-          <input type="radio" id="var2" name="variedade" value="2" /><label for="var2">★</label>
-          <input type="radio" id="var3" name="variedade" value="3" /><label for="var3">★</label>
-          <input type="radio" id="var4" name="variedade" value="4" /><label for="var4">★</label>
-          <input type="radio" id="var5" name="variedade" value="5" /><label for="var5">★</label>
-        </div>
-      </div>
-      <div class="linha">
-        <label>Custo-benefício *</label>
-        <div class="estrelas">
-          <input type="radio" id="cb1" name="custobeneficio" value="1" required /><label for="cb1">★</label>
-          <input type="radio" id="cb2" name="custobeneficio" value="2" /><label for="cb2">★</label>
-          <input type="radio" id="cb3" name="custobeneficio" value="3" /><label for="cb3">★</label>
-          <input type="radio" id="cb4" name="custobeneficio" value="4" /><label for="cb4">★</label>
-          <input type="radio" id="cb5" name="custobeneficio" value="5" /><label for="cb5">★</label>
-        </div>
-      </div>
-      <div class="linha">
-        <label>Como chegou até a loja? *</label>
-        <select name="origem" required>
-          <option value="">Selecione</option>
-          <option value="Google">Google</option>
-          <option value="Instagram">Instagram</option>
-          <option value="TikTok">TikTok</option>
-          <option value="Influencer">Influencer</option>
-          <option value="Passando em frente">Passando em frente</option>
-          <option value="Outros">Outros</option>
-        </select>
-      </div>
-      
-      <div class="linha"><label>Sugestão ou elogio</label><textarea name="sugestao" rows="3"></textarea></div>
+
       <button type="submit">Enviar</button>
+
     </form>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Máscara de data
-      const inputData = document.getElementById('data_nascimento');
-      inputData?.addEventListener('input', e => {
-        let v = e.target.value.replace(/\D/g, '');
-        if (v.length > 2 && v.length <= 4) v = v.slice(0,2) + '/' + v.slice(2);
-        else if (v.length > 4) v = v.slice(0,2) + '/' + v.slice(2,4) + '/' + v.slice(4,8);
-        e.target.value = v;
-      });
+<script>
+document.addEventListener('DOMContentLoaded', () => {
 
-      // Botões de indicação
-      const cont = document.getElementById('indicacaoBotoes');
-      const inp  = document.getElementById('inputIndicacao');
-      if (cont && inp) {
-        for (let i = 0; i <= 10; i++) {
-          const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = i;
-          btn.classList.add(i <= 4 ? 'vermelho' : i <= 7 ? 'amarelo' : 'verde');
-          btn.addEventListener('click', () => {
-            cont.querySelectorAll('button').forEach(b => b.classList.remove('selecionado'));
-            btn.classList.add('selecionado'); inp.value = i;
-          });
-          cont.appendChild(btn);
-        }
-      }
+  const cont = document.getElementById('indicacaoBotoes');
+  const inp  = document.getElementById('inputIndicacao');
 
-      // Lógica de estrelas
-      document.querySelectorAll('.estrelas').forEach(rating => {
-        const inputs = Array.from(rating.querySelectorAll('input'));
-        const labels = Array.from(rating.querySelectorAll('label'));
-        function paint(idx) { labels.forEach((lbl,i) => lbl.classList.toggle('filled', i <= idx)); }
-        labels.forEach((lbl, idx) => {
-          lbl.addEventListener('click', () => { inputs[idx].checked = true; paint(idx); });
-          lbl.addEventListener('mouseover', () => paint(idx));
-        });
-        rating.addEventListener('mouseleave', () => {
-          const checkedIdx = inputs.findIndex(i => i.checked);
-          paint(checkedIdx);
-        });
-      });
+  for (let i = 0; i <= 10; i++) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = i;
 
-      // Envio do formulário
-      const form      = document.getElementById('formularioPesquisa');
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const URL       = 'https://leezpmpmqkiocvvpcwqa.supabase.co/rest/v1/feedback_detalhado'
-      const KEY       = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlZXpwbXBtcWtpb2N2dnBjd3FhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NTI2NTUsImV4cCI6MjA4NzUyODY1NX0.M-TpjLCmwA6jyUFXG33o-L8O_1o84Ap4GM9vtxAa4KQ';
+    btn.classList.add(i <= 4 ? 'vermelho' : i <= 7 ? 'amarelo' : 'verde');
 
-      form.addEventListener('submit', async e => {
-        e.preventDefault();
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Enviando…';
+    btn.addEventListener('click', () => {
+      cont.querySelectorAll('button').forEach(b => b.classList.remove('selecionado'));
+      btn.classList.add('selecionado');
+      inp.value = i;
+    });
 
-        const data = Object.fromEntries(new FormData(form));
-// 🔒 VALIDAÇÃO DA INDICAÇÃO
-if (!data.indicacao) {
-  alert("Por favor, selecione uma nota de 0 a 10 para indicação.");
-  submitBtn.disabled = false;
-  submitBtn.textContent = 'Enviar';
-  return;
-}
-        
-        // converte data
-        if (data.data_nascimento) {
-          const [d, m, y] = data.data_nascimento.split('/');
-          data.data_nascimento = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
-        } else {
-          data.data_nascimento = null;
-        }
-
-        // payload
-        const payload = {
-          ...data,
-          atendimento:   +data.atendimento,
-          qualidade:     +data.qualidade,
-          tempo:         +data.tempo,
-          variedade:     +data.variedade,
-          custobeneficio:  +data.custobeneficio,
-          indicacao:     +data.indicacao
-        };
-
-        try {
-          const resp = await fetch(URL, {
-            method: 'POST',
-            headers: {
-              apikey:        KEY,
-              Authorization: `Bearer ${KEY}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-          });
-
-          if (!resp.ok) {
-  const err = await resp.json();
-
-  // Erro 23505 = tentativa duplicada no mesmo dia
-  if (err.code === "23505") {
-    alert("Você já respondeu nossa pesquisa hoje 💛\nVolte amanhã para resgatar seu brinde e participar novamente!");
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Enviar';
-    return;
+    cont.appendChild(btn);
   }
 
-  throw new Error(err.message || JSON.stringify(err));
-}
+  const form = document.getElementById('formularioPesquisa');
+  const submitBtn = form.querySelector('button[type="submit"]');
 
-          // salva e redireciona
-          localStorage.setItem('cliente_nome', data.nome);
-          localStorage.setItem('cliente_email', data.email);
-          localStorage.setItem('cliente_telefone', data.telefone);
-          window.location.href = 'obrigado.html';
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
 
-        } catch (err) {
-          console.error('Erro ao enviar:', err);
-          alert('Erro ao enviar: ' + err.message);
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Enviar';
-        }
-      });
-    });
-  </script>
+    const data = Object.fromEntries(new FormData(form));
+
+    if (!data.indicacao) {
+      alert("Selecione uma nota de 0 a 10.");
+      return;
+    }
+
+    alert("Pesquisa enviada com sucesso!");
+  });
+
+});
+</script>
+
 </body>
 </html>
