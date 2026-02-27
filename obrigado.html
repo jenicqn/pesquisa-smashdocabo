@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // ✅ CONFIGURAÇÃO CORRETA SUPABASE
   const SUPABASE_URL = 'https://leezpmpmqkiocvvpcwqa.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlZXpwbXBtcWtpb2N2dnBjd3FhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NTI2NTUsImV4cCI6MjA4NzUyODY1NX0.M-TpjLCmwA6jyUFXG33o-L8O_1o84Ap4GM9vtxAa4KQ';
   const BRINDE = '1 Soda Italiana';
@@ -65,51 +64,38 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function montarUI(codigo, validadeISO, linkVerif) {
-  const elValidade = document.getElementById('validade');
-  const elCodigo = document.getElementById('codigoCupom');
-  const elQr = document.getElementById('qrcode');
-  const elBtn = document.getElementById('btnCopy');
+    const elValidade = document.getElementById('validade');
+    const elCodigo = document.getElementById('codigoCupom');
+    const elQr = document.getElementById('qrcode');
+    const elBtn = document.getElementById('btnCopy');
 
-  if (!elValidade || !elCodigo || !elQr || !elBtn) {
-    console.error('Algum elemento do HTML não foi encontrado.');
-    return;
-  }
-
-  elValidade.textContent =
-    new Date(validadeISO).toLocaleDateString('pt-BR');
-
-  elCodigo.textContent =
-    `Código do Cupom: ${codigo}`;
-
-  elQr.innerHTML = '';
-
-  new QRCode(elQr, {
-    text: linkVerif,
-    width: 160,
-    height: 160
-  });
-
-  elBtn.onclick = async () => {
-    try {
-      await navigator.clipboard.writeText(codigo);
-      const old = elBtn.textContent;
-      elBtn.textContent = 'Copiado ✔';
-      setTimeout(() => elBtn.textContent = old, 1200);
-    } catch {
-      alert('Não foi possível copiar. Copie manualmente.');
+    if (!elValidade || !elCodigo || !elQr || !elBtn) {
+      console.error('Elemento HTML não encontrado.');
+      return;
     }
-  };
-}
 
-    document.getElementById('btnCopy').onclick = async () => {
+    elValidade.textContent =
+      new Date(validadeISO).toLocaleDateString('pt-BR');
+
+    elCodigo.textContent =
+      `Código do Cupom: ${codigo}`;
+
+    elQr.innerHTML = '';
+
+    new QRCode(elQr, {
+      text: linkVerif,
+      width: 160,
+      height: 160
+    });
+
+    elBtn.onclick = async () => {
       try {
         await navigator.clipboard.writeText(codigo);
-        const btn = document.getElementById('btnCopy');
-        const old = btn.textContent;
-        btn.textContent = 'Copiado ✔';
-        setTimeout(() => btn.textContent = old, 1200);
+        const old = elBtn.textContent;
+        elBtn.textContent = 'Copiado ✔';
+        setTimeout(() => elBtn.textContent = old, 1200);
       } catch {
-        alert('Não foi possível copiar. Copie manualmente.');
+        alert('Não foi possível copiar.');
       }
     };
   }
@@ -123,9 +109,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         `https://verificacupom.smashdocabo.com/?codigo=${encodeURIComponent(c.codigo)}`;
 
       if (!c.link_verificacao) {
-        try {
-          await garantirLinkVerificacao(c.codigo, link);
-        } catch (_) {}
+        try { await garantirLinkVerificacao(c.codigo, link); } catch {}
       }
 
       montarUI(c.codigo, c.valido_ate, link);
@@ -146,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   } catch (err) {
     console.error('Erro ao gerar cupom:', err);
-    alert('Erro ao gerar seu cupom. Tente novamente.');
+    alert('Erro ao gerar seu cupom.');
   }
 });
 </script>
