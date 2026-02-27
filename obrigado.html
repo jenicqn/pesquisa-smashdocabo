@@ -5,77 +5,19 @@
   <title>Obrigado!</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <link rel="stylesheet" href="obrigado.css" />
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f97316;
-      margin: 0;
-      padding: 40px 20px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .container {
-      background: #fff;
-      max-width: 480px;
-      width: 100%;
-      padding: 30px;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    }
-
-    .logo {
-      width: 140px;
-      margin-bottom: 15px;
-    }
-
-    h1 {
-      font-size: 22px;
-      margin: 10px 0 20px;
-    }
-
-    .codigo {
-      font-size: 20px;
-      font-weight: bold;
-      margin: 15px 0;
-      color: #f97316;
-    }
-
-    #qrcode {
-      margin: 20px auto;
-    }
-
-    button {
-      background: #f97316;
-      color: #fff;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .validade {
-      margin-top: 10px;
-      font-size: 14px;
-    }
-  </style>
 </head>
 
 <body>
   <div class="container">
-    <img src="logo.png" class="logo" />
+    <img src="logo.png" class="logo" alt="Logo Smash do Cabo" />
 
     <h1>Obrigado por responder nossa pesquisa 🎉</h1>
 
-    <p><strong>Você ganhou:</strong> 1 Soda Italiana</p>
+    <p class="brinde">
+      <strong>Você ganhou:</strong> 1 Soda Italiana
+    </p>
 
     <p class="validade">
       Válido até: <span id="validade">--/--/----</span>
@@ -83,13 +25,15 @@
 
     <p id="codigoCupom" class="codigo">Gerando código...</p>
 
-    <div id="qrcode"></div>
+    <div class="qr-wrap">
+      <div id="qrcode"></div>
 
-    <button id="btnCopy">Copiar código</button>
+      <button id="btnCopy">Copiar código</button>
 
-    <p style="margin-top:15px;font-size:13px;">
-      Tire um print dessa tela e apresente na loja 🍹
-    </p>
+      <p class="print-hint">
+        📸 Tire um print dessa tela e apresente na loja
+      </p>
+    </div>
   </div>
 
 <script>
@@ -102,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const SUPABASE_URL = 'https://leezpmpmqkiocvvpcwqa.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlZXpwbXBtcWtpb2N2dnBjd3FhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NTI2NTUsImV4cCI6MjA4NzUyODY1NX0.M-TpjLCmwA6jyUFXG33o-L8O_1o84Ap4GM9vtxAa4KQ';
+
   const BRINDE = '1 Soda Italiana';
 
   const nome = localStorage.getItem('cliente_nome') || 'Cliente';
@@ -124,8 +69,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function buscarCupom() {
-    const url = `${SUPABASE_URL}/rest/v1/cupons?cliente_telefone=eq.${telefone}&utilizado=eq.false&valido_ate=gte.${hojeISO}`;
+    const url = `${SUPABASE_URL}/rest/v1/cupons?cliente_telefone=eq.${telefone}&usado=is.false&valido_ate=gte.${hojeISO}`;
     const res = await fetch(url, { headers });
+    if (!res.ok) throw new Error('Erro ao buscar cupom');
     return res.json();
   }
 
@@ -139,7 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         cliente_telefone: telefone,
         brinde: BRINDE,
         valido_ate: validadeISO,
-        utilizado: false,
+        usado: false,
         link_verificacao: link
       })
     });
@@ -154,16 +100,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('validade').textContent =
       new Date(validadeISO).toLocaleDateString('pt-BR');
 
-    document.getElementById('codigoCupom').textContent =
-      codigo;
+    document.getElementById('codigoCupom').textContent = codigo;
 
     const qr = document.getElementById('qrcode');
     qr.innerHTML = '';
 
     new QRCode(qr, {
       text: link,
-      width: 150,
-      height: 150
+      width: 160,
+      height: 160
     });
 
     document.getElementById('btnCopy').onclick = async () => {
@@ -183,9 +128,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       renderizar(c.codigo, c.valido_ate, link);
     } else {
       const codigo = gerarCodigo();
+
       const validade = new Date();
       validade.setDate(validade.getDate() + 30);
       const validadeISO = validade.toISOString().split('T')[0];
+
       const link = `https://verificacupom.smashdocabo.com/?codigo=${codigo}`;
 
       await criarCupom(codigo, validadeISO, link);
