@@ -1,145 +1,131 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <title>Obrigado!</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="obrigado.css" />
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-</head>
-<body>
-  <div class="container">
-    <img src="logo.png" alt="Logo Smash do Cabo" class="logo" />
-    <div class="emoji">🎉</div>
-    <h1>Obrigado por responder nossa pesquisa!</h1>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!localStorage.getItem('cliente_telefone')) {
+    window.location.href = 'index.html';
+    return;
+  }
 
-    <img src="DSC00280.png" alt="Soda Italiana" class="soda-photo" />
+  // ✅ CONFIGURAÇÃO CORRETA SUPABASE
+  const SUPABASE_URL = 'https://leezpmpmqkiocvvpcwqa.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlZXpwbXBtcWtpb2N2dnBjd3FhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NTI2NTUsImV4cCI6MjA4NzUyODY1NX0.M-TpjLCmwA6jyUFXG33o-L8O_1o84Ap4GM9vtxAa4KQ';
+  const BRINDE = '1 Soda Italiana';
 
-    <p class="brinde">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" stroke="#f97316" fill="none" viewBox="0 0 24 24">
-        <path stroke-width="2" d="M6 6h12v12H6zM9 9h6v6H9z"/>
-      </svg>
-      Você ganhou:<br /><strong>1 Soda Italiana</strong>
-    </p>
+  const nome     = localStorage.getItem('cliente_nome') || 'Cliente';
+  const telefone = (localStorage.getItem('cliente_telefone') || '').trim();
+  const hojeISO  = new Date().toISOString().split('T')[0];
 
-    <p class="validade">
-      <span class="frase-principal">Válido para sua próxima visita na loja!</span>
-      Esse cupom expira em: <span id="validade">--/--/----</span>
-    </p>
+  const headers = {
+    apikey: SUPABASE_ANON_KEY,
+    Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    'Content-Type': 'application/json'
+  };
 
-    <p class="codigo" id="codigoCupom">Gerando seu código...</p>
-
-    <div class="qr-wrap">
-      <div id="qrcode"></div>
-      <div class="btns">
-        <button id="btnCopy">Copiar código</button>
-      </div>
-      <p class="hint">Tire um print dessa tela e mostre ao garçom na sua próxima visita 🍹</p>
-    </div>
-  </div>
-
-  <script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    if (!localStorage.getItem('cliente_telefone')) {
-      window.location.href = 'index.html';
-      return;
+  function gerarCodigoAleatorio() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 4; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
+    return 'SMASH-' + code;
+  }
 
-   const URL       = 'https://leezpmpmqkiocvvpcwqa.supabase.co/rest/v1/feedback_detalhado'
-   const KEY       = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlZXpwbXBtcWtpb2N2dnBjd3FhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NTI2NTUsImV4cCI6MjA4NzUyODY1NX0.M-TpjLCmwA6jyUFXG33o-L8O_1o84Ap4GM9vtxAa4KQ';
-   const BRINDE    = '1 Soda Italiana';
+  async function buscarCupomValido() {
+    const url = `${SUPABASE_URL}/rest/v1/cupons?cliente_telefone=eq.${encodeURIComponent(telefone)}&utilizado=eq.false&valido_ate=gte.${hojeISO}`;
+    const r = await fetch(url, { headers });
+    return r.json();
+  }
 
-    const nome     = localStorage.getItem('cliente_nome')     || 'Cliente';
-    const telefone = (localStorage.getItem('cliente_telefone')|| '').trim();
-    const hojeISO  = new Date().toISOString().split('T')[0];
+  async function criarCupom(codigo, validoAteISO, linkVerif) {
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/cupons`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        codigo,
+        cliente_nome: nome,
+        cliente_telefone: telefone,
+        brinde: BRINDE,
+        valido_ate: validoAteISO,
+        utilizado: false,
+        link_verificacao: linkVerif
+      })
+    });
 
-    const headers = {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json'
-    };
-
-    function gerarCodigoAleatorio() {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let code = '';
-      for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
-      return 'SMASH-' + code;
+    if (!resp.ok) {
+      const errTxt = await resp.text();
+      throw new Error(`Falha ao salvar cupom: ${resp.status} ${errTxt}`);
     }
+  }
 
-    async function buscarCupomValido() {
-      const url = `${SUPABASE_URL}/rest/v1/cupons?cliente_telefone=eq.${encodeURIComponent(telefone)}&utilizado=eq.false&valido_ate=gte.${hojeISO}`;
-      const r = await fetch(url, { headers });
-      return r.json();
-    }
+  async function garantirLinkVerificacao(codigo, linkVerif) {
+    await fetch(`${SUPABASE_URL}/rest/v1/cupons?codigo=eq.${encodeURIComponent(codigo)}`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({ link_verificacao: linkVerif })
+    });
+  }
 
-    async function criarCupom(codigo, validoAteISO, linkVerif) {
-      const resp = await fetch(`${SUPABASE_URL}/rest/v1/cupons`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          codigo,
-          cliente_nome: nome,
-          cliente_telefone: telefone,
-          brinde: BRINDE,
-          valido_ate: validoAteISO,
-          utilizado: false,
-          link_verificacao: linkVerif
-        })
-      });
-      if (!resp.ok) {
-        const errTxt = await resp.text();
-        throw new Error(`Falha ao salvar cupom: ${resp.status} ${errTxt}`);
+  function montarUI(codigo, validadeISO, linkVerif) {
+    document.getElementById('validade').textContent =
+      new Date(validadeISO).toLocaleDateString('pt-BR');
+
+    document.getElementById('codigoCupom').textContent =
+      `Código do Cupom: ${codigo}`;
+
+    const qrel = document.getElementById('qrcode');
+    qrel.innerHTML = '';
+
+    new QRCode(qrel, {
+      text: linkVerif,
+      width: 160,
+      height: 160
+    });
+
+    document.getElementById('btnCopy').onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(codigo);
+        const btn = document.getElementById('btnCopy');
+        const old = btn.textContent;
+        btn.textContent = 'Copiado ✔';
+        setTimeout(() => btn.textContent = old, 1200);
+      } catch {
+        alert('Não foi possível copiar. Copie manualmente.');
       }
-    }
+    };
+  }
 
-    async function garantirLinkVerificacao(codigo, linkVerif) {
-      await fetch(`${SUPABASE_URL}/rest/v1/cupons?codigo=eq.${encodeURIComponent(codigo)}`, {
-        method: 'PATCH',
-        headers,
-        body: JSON.stringify({ link_verificacao: linkVerif })
-      });
-    }
-
-    function montarUI(codigo, validadeISO, linkVerif) {
-      document.getElementById('validade').textContent = new Date(validadeISO).toLocaleDateString('pt-BR');
-      document.getElementById('codigoCupom').textContent = `Código do Cupom: ${codigo}`;
-
-      const qrel = document.getElementById('qrcode');
-      qrel.innerHTML = '';
-      new QRCode(qrel, { text: linkVerif, width: 160, height: 160 });
-
-      document.getElementById('btnCopy').onclick = async () => {
-        try {
-          await navigator.clipboard.writeText(codigo);
-          const btn = document.getElementById('btnCopy');
-          const old = btn.textContent;
-          btn.textContent = 'Copiado ✔';
-          setTimeout(()=> btn.textContent = old, 1200);
-        } catch {
-          alert('Não foi possível copiar. Copie manualmente.');
-        }
-      };
-    }
-
+  try {
     const lista = await buscarCupomValido();
 
     if (Array.isArray(lista) && lista.length > 0) {
       const c = lista[0];
-      const link = c.link_verificacao || `https://verificacupom.smashdocabo.com/?codigo=${encodeURIComponent(c.codigo)}`;
+      const link = c.link_verificacao ||
+        `https://verificacupom.smashdocabo.com/?codigo=${encodeURIComponent(c.codigo)}`;
+
       if (!c.link_verificacao) {
-        try { await garantirLinkVerificacao(c.codigo, link); } catch(_) {}
+        try {
+          await garantirLinkVerificacao(c.codigo, link);
+        } catch (_) {}
       }
+
       montarUI(c.codigo, c.valido_ate, link);
+
     } else {
       const codigo = gerarCodigoAleatorio();
-      const validade = new Date(); validade.setDate(validade.getDate() + 30);
+
+      const validade = new Date();
+      validade.setDate(validade.getDate() + 30);
       const validoAteISO = validade.toISOString().split('T')[0];
-      const linkVerif = `https://verificacupom.smashdocabo.com/?codigo=${encodeURIComponent(codigo)}`;
+
+      const linkVerif =
+        `https://verificacupom.smashdocabo.com/?codigo=${encodeURIComponent(codigo)}`;
 
       await criarCupom(codigo, validoAteISO, linkVerif);
       montarUI(codigo, validoAteISO, linkVerif);
     }
-  });
-  </script>
-</body>
-</html>
+
+  } catch (err) {
+    console.error('Erro ao gerar cupom:', err);
+    alert('Erro ao gerar seu cupom. Tente novamente.');
+  }
+});
+</script>
