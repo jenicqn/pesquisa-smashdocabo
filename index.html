@@ -75,6 +75,11 @@
         <input type="text" id="data_nascimento" name="data_nascimento" placeholder="dd/mm/aaaa" maxlength="10" pattern="\d{2}/\d{2}/\d{4}" />
       </div>
       <div class="linha">
+        <label>Indicação para amigos (0 a 10) *</label>
+        <div class="indicacao-botoes" id="indicacaoBotoes"></div>
+        <input type="hidden" name="indicacao" id="inputIndicacao" required />
+      </div>
+      <div class="linha">
         <label>Você é morador da cidade? *</label>
         <input type="radio" name="morador" value="Sim, sou morador" required /> Sim
         <input type="radio" name="morador" value="Não, sou turista" required /> Não
@@ -142,11 +147,7 @@
           <option value="Outros">Outros</option>
         </select>
       </div>
-      <div class="linha">
-        <label>Indicação para amigos (0 a 10) *</label>
-        <div class="indicacao-botoes" id="indicacaoBotoes"></div>
-        <input type="hidden" name="indicacao" id="inputIndicacao" required />
-      </div>
+      
       <div class="linha"><label>Sugestão ou elogio</label><textarea name="sugestao" rows="3"></textarea></div>
       <button type="submit">Enviar</button>
     </form>
@@ -205,6 +206,14 @@
         submitBtn.textContent = 'Enviando…';
 
         const data = Object.fromEntries(new FormData(form));
+// 🔒 VALIDAÇÃO DA INDICAÇÃO
+if (!data.indicacao) {
+  alert("Por favor, selecione uma nota de 0 a 10 para indicação.");
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Enviar';
+  return;
+}
+        
         // converte data
         if (data.data_nascimento) {
           const [d, m, y] = data.data_nascimento.split('/');
